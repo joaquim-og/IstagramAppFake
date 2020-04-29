@@ -21,6 +21,12 @@ android {
         }
     }
 
+    // JAVA 1.8 to use lambda functions
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
 }
 
 dependencies {
