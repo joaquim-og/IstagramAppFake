@@ -55,10 +55,11 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/login_button-enter"
-                style="@style/InstaFormButton"
-                android:text="@string/enter" />
+            <com.joaquim.instagramfake.login.presentation.TestButton
+                android:id="@+id/login_button_enter"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:text="@string/enter"/>
 
             <FrameLayout
                 android:layout_width="wrap_content"
