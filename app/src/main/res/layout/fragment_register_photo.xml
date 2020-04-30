@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="register.presentation.RegisterActivity"
+    tools:showIn="@layout/fragment_register_email">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/photo_icon" />
+
+    <TextView
+        style="@style/InstaTextViewBaseForm"
+        android:text="@string/photo_register_title"
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        style="@style/InstaTextViewBaseForm"
+        android:text="@string/photo_register_subtitle"
+        android:layout_gravity="center_horizontal"/>
+
+    <commom.view.LoadingButton
+        android:id="@+id/register_button_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text="@string/add_photo" />
+
+    <Button
+        android:id="@+id/register_button_jump"
+        style="@style/InstaFormButton.Link"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/jump"
+        android:layout_marginBottom="36dp"
+        />
+
+
+</LinearLayout>
