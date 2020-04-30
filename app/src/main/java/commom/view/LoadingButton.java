@@ -1,4 +1,4 @@
-package com.joaquim.instagramfake.login.presentation;
+package commom.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

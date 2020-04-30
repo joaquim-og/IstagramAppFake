@@ -12,6 +12,8 @@ import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.joaquim.instagramfake.R;
 
+import commom.view.LoadingButton;
+
 public class LoginActivity extends AppCompatActivity {
 
     private LoadingButton buttonEnter;

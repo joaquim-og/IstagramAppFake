@@ -10,6 +10,7 @@
     tools:context="register.presentation.RegisterActivity">
 
     <ScrollView
+        android:id="@+id/register_scroolview"
         android:layout_width="match_parent"
         android:layout_gravity="center_vertical"
         android:layout_height="wrap_content">
@@ -21,11 +22,11 @@
 
             <fragment
                 android:id="@+id/register_fragment"
-                android:name="register.presentation.RegisterWelcomeFragment"
+                android:name="register.presentation.RegisterPhotoFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                tools:layout="@layout/fragment_register_welcome" />
+                tools:layout="@layout/fragment_register_photo" />
 
         </LinearLayout>
 
