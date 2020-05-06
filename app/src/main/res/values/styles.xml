@@ -32,6 +32,24 @@
         <item name="android:background">@drawable/button_background</item>
     </style>
 
+    <style name="InstaTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="InstaButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/button_background</item>
+    </style>
+
+    <style name="InstaButton.White">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:background">@drawable/button_white_background</item>
+    </style>
+
     <style name="InstaFormButton.Link" parent="InstaFormButton">
 
         <item name="android:textColor">@color/blueEnable</item>
