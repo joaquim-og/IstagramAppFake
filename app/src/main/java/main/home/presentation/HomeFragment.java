@@ -1,4 +1,4 @@
-package main.profile.presentation;
+package main.home.presentation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,13 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.joaquim.instagramfake.R;
 
-public class ProfileFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
-    public ProfileFragment() {}
+    public HomeFragment() {}
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -30,10 +31,10 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_main_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_home, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.profile_recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        RecyclerView recyclerView = view.findViewById(R.id.home_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new PostAdaper());
 
 
@@ -67,7 +68,7 @@ public class ProfileFragment extends Fragment {
         @NonNull
         @Override
         public PostViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            return new PostViewHolder(getLayoutInflater().inflate(R.layout.item_profile_grid, viewGroup, false));
+            return new PostViewHolder(getLayoutInflater().inflate(R.layout.item_post_list, viewGroup, false));
         }
 
         @Override
@@ -88,7 +89,7 @@ public class ProfileFragment extends Fragment {
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-            imagePost = itemView.findViewById(R.id.profileImage_grid);
+            imagePost = itemView.findViewById(R.id.profile_image_grid);
         }
 
         public void bind(int image) {
