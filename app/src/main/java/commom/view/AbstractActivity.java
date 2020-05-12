@@ -29,6 +29,10 @@ public abstract class AbstractActivity extends AppCompatActivity {
         return Drawables.getDrawable(this, drawableId);
     }
 
+    public void showProgressBar() {}
+
+    public void hideProgressBar() {}
+
     protected abstract @LayoutRes int getLayout();
 
 }
