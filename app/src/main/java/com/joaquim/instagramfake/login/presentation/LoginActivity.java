@@ -17,10 +17,11 @@ import com.joaquim.instagramfake.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import commom.view.AbstractActivity;
 import commom.view.LoadingButton;
 
-public class LoginActivity extends AbstractActivity implements LoginView {
+public class LoginActivity extends AbstractActivity implements LoginView, TextWatcher {
 
     @BindView(R.id.login_edit_text_email)
     EditText editTextMail;
@@ -31,7 +32,8 @@ public class LoginActivity extends AbstractActivity implements LoginView {
     @BindView(R.id.login_edit_text_password_input)
     TextInputLayout inputLayoutTesteP;
 
-    @BindView(R.id.login_button_enter) LoadingButton buttonEnter;
+    @BindView(R.id.login_button_enter)
+    LoadingButton buttonEnter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +45,8 @@ public class LoginActivity extends AbstractActivity implements LoginView {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
         }
 
-        editTextMail.addTextChangedListener(watcher);
-        editTextPassword.addTextChangedListener(watcher);
-
-        buttonEnter.setOnClickListener(v -> {
-            buttonEnter.showProgress(true);
-
-            new Handler().postDelayed(() -> {
-                buttonEnter.showProgress(false);
-
-
-            }, 4000);
-        });
+        editTextMail.addTextChangedListener(this);
+        editTextPassword.addTextChangedListener(this);
 
     }
 
@@ -64,6 +56,11 @@ public class LoginActivity extends AbstractActivity implements LoginView {
             inputLayouttext.setError(emailError);
             editTextMail.setBackground(findDrawable(R.drawable.edit_text_error));
         }
+
+        if (passwordError != null) {
+            inputLayoutTesteP.setError(passwordError);
+            editTextPassword.setBackground(findDrawable(R.drawable.edit_text_error));
+        }
     }
 
     @Override
@@ -71,25 +68,44 @@ public class LoginActivity extends AbstractActivity implements LoginView {
         // TODO ainda tem de implementar çábagaça
     }
 
-    private TextWatcher watcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+    @OnClick(R.id.login_button_enter)
+    public void onButtonEnterClick() {
+        buttonEnter.showProgress(true);
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (!s.toString().isEmpty()) {
-                buttonEnter.setEnabled(true);
-            } else {
-                buttonEnter.setEnabled(false);
-            }
-        }
+        new Handler().postDelayed(() -> {
+            buttonEnter.showProgress(false);
 
-        @Override
-        public void afterTextChanged(Editable s) {
 
+        }, 4000);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (!s.toString().isEmpty()) {
+            buttonEnter.setEnabled(true);
+        } else {
+            buttonEnter.setEnabled(false);
         }
-    };
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
+
+    @Override
+    public void showProgressBar() {
+        buttonEnter.showProgress(true);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        buttonEnter.showProgress(false);
+    }
 
     @Override
     protected int getLayout() {
