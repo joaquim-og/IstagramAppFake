@@ -1,10 +1,14 @@
 package com.joaquim.instagramfake.login.presentation;
 
+import com.joaquim.instagramfake.R;
 import com.joaquim.instagramfake.login.datasource.LoginDataSource;
 
 import android.os.Handler;
 
-class LoginPresenter {
+import commom.presenter.Presenter;
+import commom.util.Strings;
+
+class LoginPresenter implements Presenter {
 
     private final LoginView view;
     private final LoginDataSource dataSource;
@@ -15,12 +19,27 @@ class LoginPresenter {
     }
 
     void login(String email, String password) {
-        view.showProgressBar();
 
-        new Handler().postDelayed(() -> {
-            view.hideProgressBar();
-            view.onFailureForm("Error1", "Erro2");
-        }, 2000);
+        if (!Strings.emailValid(email)) {
+            view.onFailureForm(view.getContext().getString(R.string.invalid_email), null);
+            return;
+        }
+        view.showProgressBar();
+        dataSource.login(email, password, this);
     }
 
+    @Override
+    public void onSuccess() {
+
+    }
+
+    @Override
+    public void onError(String message) {
+        view.onFailureForm(null, message);
+    }
+
+    @Override
+    public void onComplete() {
+        view.hideProgressBar();
+    }
 }

@@ -1,13 +1,9 @@
 package com.joaquim.instagramfake.login.presentation;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -15,15 +11,15 @@ import android.widget.EditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.joaquim.instagramfake.R;
 import com.joaquim.instagramfake.login.datasource.LoginDataSource;
-import com.joaquim.instagramfake.login.datasource.LoginLocalDatasource;
+import com.joaquim.instagramfake.login.datasource.LoginLocalDataSource;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import commom.view.AbstractActivity;
 import commom.view.LoadingButton;
 
-public class LoginActivity extends AbstractActivity implements LoginView, TextWatcher {
+public class LoginActivity extends AbstractActivity implements LoginView {
 
     LoginPresenter presenter;
 
@@ -49,14 +45,11 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
         }
 
-        editTextMail.addTextChangedListener(this);
-        editTextPassword.addTextChangedListener(this);
-
     }
 
     @Override
     protected void onInject() {
-        LoginDataSource dataSource = new LoginLocalDatasource();
+        LoginDataSource dataSource = new LoginLocalDataSource();
         presenter = new LoginPresenter(this, dataSource);
     }
 
@@ -83,22 +76,21 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
         presenter.login(editTextMail.getText().toString(), editTextPassword.getText().toString());
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
+    @OnTextChanged({R.id.login_edit_text_email, R.id.login_edit_text_password})
+    public void onTextChanged(CharSequence s) {
+        buttonEnter.setEnabled(
+                !editTextMail.getText().toString().isEmpty() &&
+                        !editTextPassword.getText().toString().isEmpty());
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (!s.toString().isEmpty()) {
-            buttonEnter.setEnabled(true);
-        } else {
-            buttonEnter.setEnabled(false);
+        if (s.hashCode() == editTextMail.getText().hashCode()) {
+            editTextMail.setBackground(findDrawable(R.drawable.edit_text_background));
+            inputLayouttext.setError(null);
+            inputLayouttext.setErrorEnabled(false);
+        } else if (s.hashCode() == editTextPassword.getText().hashCode()) {
+            editTextPassword.setBackground(findDrawable(R.drawable.edit_text_background));
+            inputLayoutTesteP.setError(null);
+            inputLayoutTesteP.setErrorEnabled(false);
         }
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
     }
 
     @Override

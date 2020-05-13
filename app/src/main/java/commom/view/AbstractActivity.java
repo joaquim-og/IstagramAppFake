@@ -1,5 +1,6 @@
 package commom.view;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -36,6 +37,11 @@ public abstract class AbstractActivity extends AppCompatActivity  implements Vie
 
     @Override
     public void hideProgressBar() {}
+
+    @Override
+    public Context getContext() {
+        return getBaseContext();
+    }
 
     protected abstract @LayoutRes int getLayout();
 
