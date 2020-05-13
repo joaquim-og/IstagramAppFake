@@ -18,6 +18,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import commom.view.AbstractActivity;
 import commom.view.LoadingButton;
+import main.presentation.MainActivity;
 
 public class LoginActivity extends AbstractActivity implements LoginView {
 
@@ -68,7 +69,7 @@ public class LoginActivity extends AbstractActivity implements LoginView {
 
     @Override
     public void onUserLogged() {
-        // TODO ainda tem de implementar çábagaça
+        MainActivity.launch(this);
     }
 
     @OnClick(R.id.login_button_enter)

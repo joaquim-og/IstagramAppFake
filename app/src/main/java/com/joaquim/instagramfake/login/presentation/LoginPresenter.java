@@ -5,6 +5,7 @@ import com.joaquim.instagramfake.login.datasource.LoginDataSource;
 
 import android.os.Handler;
 
+import commom.model.UserAuth;
 import commom.presenter.Presenter;
 import commom.util.Strings;
 
@@ -29,8 +30,8 @@ class LoginPresenter implements Presenter {
     }
 
     @Override
-    public void onSuccess() {
-
+    public void onSuccess(UserAuth userAuth) {
+        view.onUserLogged();
     }
 
     @Override
