@@ -14,6 +14,8 @@ import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.joaquim.instagramfake.R;
+import com.joaquim.instagramfake.login.datasource.LoginDataSource;
+import com.joaquim.instagramfake.login.datasource.LoginLocalDatasource;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +24,8 @@ import commom.view.AbstractActivity;
 import commom.view.LoadingButton;
 
 public class LoginActivity extends AbstractActivity implements LoginView, TextWatcher {
+
+    LoginPresenter presenter;
 
     @BindView(R.id.login_edit_text_email)
     EditText editTextMail;
@@ -51,6 +55,12 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
     }
 
     @Override
+    protected void onInject() {
+        LoginDataSource dataSource = new LoginLocalDatasource();
+        presenter = new LoginPresenter(this, dataSource);
+    }
+
+    @Override
     public void onFailureForm(String emailError, String passwordError) {
         if (emailError != null) {
             inputLayouttext.setError(emailError);
@@ -70,13 +80,7 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
 
     @OnClick(R.id.login_button_enter)
     public void onButtonEnterClick() {
-        buttonEnter.showProgress(true);
-
-        new Handler().postDelayed(() -> {
-            buttonEnter.showProgress(false);
-
-
-        }, 4000);
+        presenter.login(editTextMail.getText().toString(), editTextPassword.getText().toString());
     }
 
     @Override
