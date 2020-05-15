@@ -16,13 +16,13 @@ public class Database {
 
     static {
         usersAuth = new HashSet<>();
-
-        usersAuth.add(new UserAuth("user1@gmail.com", "1"));
-        usersAuth.add(new UserAuth("user2@gmail.com", "12"));
-        usersAuth.add(new UserAuth("user3@gmail.com", "123"));
-        usersAuth.add(new UserAuth("user4@gmail.com", "1234"));
-        usersAuth.add(new UserAuth("user5@gmail.com", "12345"));
-        usersAuth.add(new UserAuth("user6@gmail.com", "12346"));
+//
+//        usersAuth.add(new UserAuth("user1@gmail.com", "1"));
+//        usersAuth.add(new UserAuth("user2@gmail.com", "12"));
+//        usersAuth.add(new UserAuth("user3@gmail.com", "123"));
+//        usersAuth.add(new UserAuth("user4@gmail.com", "1234"));
+//        usersAuth.add(new UserAuth("user5@gmail.com", "12345"));
+//        usersAuth.add(new UserAuth("user6@gmail.com", "12346"));
 
     }
 

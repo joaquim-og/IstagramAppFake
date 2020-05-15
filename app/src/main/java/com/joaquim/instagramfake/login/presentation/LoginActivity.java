@@ -19,33 +19,24 @@ import butterknife.OnTextChanged;
 import commom.view.AbstractActivity;
 import commom.view.LoadingButton;
 import main.presentation.MainActivity;
+import register.presentation.RegisterActivity;
 
 public class LoginActivity extends AbstractActivity implements LoginView {
 
     LoginPresenter presenter;
 
-    @BindView(R.id.login_edit_text_email)
-    EditText editTextMail;
-    @BindView(R.id.login_edit_text_password)
-    EditText editTextPassword;
-    @BindView(R.id.login_edit_text_email_input)
-    TextInputLayout inputLayouttext;
-    @BindView(R.id.login_edit_text_password_input)
-    TextInputLayout inputLayoutTesteP;
+    @BindView(R.id.login_edit_text_email) EditText editTextMail;
+    @BindView(R.id.login_edit_text_password) EditText editTextPassword;
+    @BindView(R.id.login_edit_text_email_input) TextInputLayout inputLayouttext;
+    @BindView(R.id.login_edit_text_password_input) TextInputLayout inputLayoutTesteP;
 
-    @BindView(R.id.login_button_enter)
-    LoadingButton buttonEnter;
+    @BindView(R.id.login_button_enter) LoadingButton buttonEnter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
-        }
-
+        setStatusBarDak();
     }
 
     @Override
@@ -75,6 +66,11 @@ public class LoginActivity extends AbstractActivity implements LoginView {
     @OnClick(R.id.login_button_enter)
     public void onButtonEnterClick() {
         presenter.login(editTextMail.getText().toString(), editTextPassword.getText().toString());
+    }
+
+    @OnClick(R.id.login_text_view_register)
+    public void onTextViewRegisterClick() {
+        RegisterActivity.launch(this);
     }
 
     @OnTextChanged({R.id.login_edit_text_email, R.id.login_edit_text_password})
