@@ -9,6 +9,7 @@
     tools:showIn="@layout/fragment_register_email">
 
     <TextView
+        android:id="@+id/register_text_view_welcome"
         style="@style/InstaTextViewBaseForm"
         android:layout_gravity="center"
         android:text="@string/welcome_to_instagram"/>
