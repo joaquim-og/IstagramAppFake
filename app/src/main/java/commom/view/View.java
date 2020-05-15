@@ -10,4 +10,6 @@ public interface View {
 
     void hideProgressBar();
 
+    void setStatusBarDak();
+
 }

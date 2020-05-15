@@ -20,13 +20,12 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
 
-            <fragment
+            <FrameLayout
                 android:id="@+id/register_fragment"
-                android:name="register.presentation.RegisterPhotoFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                tools:layout="@layout/fragment_register_photo" />
+                tools:layout="@layout/fragment_register_email" />
 
         </LinearLayout>
 
