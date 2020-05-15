@@ -2,6 +2,7 @@ package register.presentation;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -19,6 +20,8 @@ import main.presentation.MainActivity;
 
 public class RegisterActivity extends AbstractActivity implements RegisterView {
 
+    private RegisterPresenter presenter;
+
     public static void launch(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
         context.startActivity(intent);
@@ -33,10 +36,34 @@ public class RegisterActivity extends AbstractActivity implements RegisterView {
 
     @Override
     protected void onInject() {
-        RegisterEmailFragment frag = new RegisterEmailFragment();
+        presenter = new RegisterPresenter();
+        presenter.setRegisterView(this);
+
+        showNextView(RegisterSteps.EMAIL);
+
+
+    }
+
+    @Override
+    public void showNextView(RegisterSteps step) {
+        Fragment frag = RegisterEmailFragment.newInstance(presenter);
+        switch (step) {
+            case EMAIL:
+                break;
+            case NAME_PASSWORD:
+                frag = RegisterNamePasswordFragment.newInstance(presenter);
+                break;
+        }
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.register_fragment, frag, "fragment1");
+
+        if (manager.findFragmentById(R.id.register_fragment) == null) {
+            transaction.add(R.id.register_fragment, frag, step.name());
+        } else {
+            transaction.replace(R.id.register_fragment, frag, step.name());
+            transaction.addToBackStack(step.name());
+        }
 
         transaction.commit();
     }

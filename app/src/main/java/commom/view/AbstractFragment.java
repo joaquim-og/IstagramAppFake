@@ -20,7 +20,9 @@ import butterknife.ButterKnife;
 import commom.util.Colors;
 import commom.util.Drawables;
 
-public abstract class AbstractFragment extends Fragment implements commom.view.View {
+public abstract class AbstractFragment<P> extends Fragment implements commom.view.View {
+
+    protected P presenter;
 
     @Nullable
     @Override
@@ -63,6 +65,9 @@ public abstract class AbstractFragment extends Fragment implements commom.view.V
         return Colors.getColor(getContext(), colorId);
     }
 
+    public void setPresenter(P presenter) {
+        this.presenter = presenter;
+    }
 
     protected abstract @LayoutRes int getLayout();
 

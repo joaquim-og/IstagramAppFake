@@ -19,7 +19,7 @@ import butterknife.OnTextChanged;
 import commom.view.AbstractFragment;
 import commom.view.LoadingButton;
 
-public class RegisterEmailFragment extends AbstractFragment implements RegisterView.EmailView {
+public class RegisterEmailFragment extends AbstractFragment<RegisterPresenter> implements RegisterView.EmailView {
 
     @BindView(R.id.register_edit_text_email_input)
     TextInputLayout inputLayoutEmail;
@@ -32,6 +32,15 @@ public class RegisterEmailFragment extends AbstractFragment implements RegisterV
 
     public RegisterEmailFragment(){}
 
+    public static RegisterEmailFragment newInstance(RegisterPresenter presenter) {
+        RegisterEmailFragment fragment = new RegisterEmailFragment();
+
+        fragment.setPresenter(presenter);
+        presenter.setEmailView(fragment);
+
+        return fragment;
+    }
+
     @Override
     protected int getLayout() {
         return R.layout.fragment_register_email;
@@ -39,7 +48,7 @@ public class RegisterEmailFragment extends AbstractFragment implements RegisterV
 
     @OnClick(R.id.register_button_next)
     public void onButtonNextClick(){
-
+        presenter.setEmail(editTextEmail.getText().toString());
     }
 
     @OnClick(R.id.register_text_view_email_login)
@@ -59,8 +68,18 @@ public class RegisterEmailFragment extends AbstractFragment implements RegisterV
     }
 
     @Override
-    public void onFailureForm(String emailError) {
-
+    public void showProgressBar() {
+        buttonNext.showProgress(true);
     }
 
+    @Override
+    public void hideProgressBar() {
+        buttonNext.showProgress(false);
+    }
+
+    @Override
+    public void onFailureForm(String emailError) {
+        inputLayoutEmail.setError(emailError);
+        editTextEmail.setBackground(findDrawable(R.drawable.edit_text_error));
+    }
 }
