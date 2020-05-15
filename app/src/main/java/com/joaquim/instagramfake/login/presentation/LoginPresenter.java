@@ -9,7 +9,7 @@ import commom.model.UserAuth;
 import commom.presenter.Presenter;
 import commom.util.Strings;
 
-class LoginPresenter implements Presenter {
+class LoginPresenter implements Presenter<UserAuth> {
 
     private final LoginView view;
     private final LoginDataSource dataSource;

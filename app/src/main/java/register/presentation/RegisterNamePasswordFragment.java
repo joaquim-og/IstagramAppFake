@@ -6,6 +6,7 @@ package register.presentation;
         import android.view.ViewGroup;
         import android.widget.Button;
         import android.widget.EditText;
+        import android.widget.Toast;
 
         import androidx.annotation.NonNull;
         import androidx.annotation.Nullable;
@@ -68,6 +69,11 @@ public class RegisterNamePasswordFragment extends AbstractFragment<RegisterPrese
             inputLayoutNamePassword.setError(passwordError);
             editTextPassword.setBackground(findDrawable(R.drawable.edit_text_error));
         }
+    }
+
+    @Override
+    public void onFailureCreateuser(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     @OnClick(R.id.register_text_view_login)
