@@ -8,6 +8,8 @@ public interface RegisterView {
 
     void showNextView(RegisterSteps step);
 
+    void onUserCreated();
+
     interface EmailView {
 
         Context getContext();
@@ -25,6 +27,10 @@ public interface RegisterView {
     }
 
     interface WelcomeView {
+
+    }
+
+    interface PhotoView {
 
     }
 
