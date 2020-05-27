@@ -65,6 +65,10 @@ public class RegisterPresenter implements Presenter<UserAuth> {
         registerView.showNextView(RegisterSteps.PHOTO);
     }
 
+    public void jumpRegistration() {
+        registerView.onUserCreated();
+    }
+
     @Override
     public void onSuccess(UserAuth response) {
         registerView.showNextView(RegisterSteps.WELCOME);
