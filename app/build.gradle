@@ -47,4 +47,7 @@ dependencies {
     //for agile findViewById
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+
+    //for crop images
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
 }

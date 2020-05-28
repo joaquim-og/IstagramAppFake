@@ -26,7 +26,7 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress" />
 
-    <commom.view.LoadingButton
+    <commom.component.LoadingButton
         android:id="@+id/register_button_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
