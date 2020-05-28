@@ -1,4 +1,4 @@
-package commom.view;
+package commom.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;

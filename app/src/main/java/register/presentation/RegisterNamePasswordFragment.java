@@ -1,16 +1,7 @@
 package register.presentation;
 
-        import android.os.Bundle;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.Button;
         import android.widget.EditText;
         import android.widget.Toast;
-
-        import androidx.annotation.NonNull;
-        import androidx.annotation.Nullable;
-        import androidx.fragment.app.Fragment;
 
         import com.google.android.material.textfield.TextInputLayout;
         import com.joaquim.instagramfake.R;
@@ -19,7 +10,7 @@ package register.presentation;
         import butterknife.OnClick;
         import butterknife.OnTextChanged;
         import commom.view.AbstractFragment;
-        import commom.view.LoadingButton;
+        import commom.component.LoadingButton;
 
 public class RegisterNamePasswordFragment extends AbstractFragment<RegisterPresenter> implements RegisterView.NamePasswordView   {
 

@@ -55,7 +55,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-            <commom.view.LoadingButton
+            <commom.component.LoadingButton
                 android:id="@+id/login_button_enter"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"

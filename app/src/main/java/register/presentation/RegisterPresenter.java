@@ -1,5 +1,7 @@
 package register.presentation;
 
+import android.net.Uri;
+
 import com.joaquim.instagramfake.R;
 
 import commom.model.UserAuth;
@@ -13,10 +15,11 @@ public class RegisterPresenter implements Presenter<UserAuth> {
     private RegisterView.EmailView emailView;
     private RegisterView.NamePasswordView setNamePasswordView;
     private RegisterView registerView;
+    private RegisterView.PhotoView photoView;
 
     private String email;
     private String name;
-    private String password;
+    private Uri uri;
 
     public RegisterPresenter(RegisterLocalDataSource dataSource) {
         this.dataSource = dataSource;
@@ -51,18 +54,38 @@ public class RegisterPresenter implements Presenter<UserAuth> {
         }
 
         this.name = name;
-        this.password = password;
 
         setNamePasswordView.showProgressBar();
-        dataSource.createUser(this.name, this.email, this.password, this);
+        dataSource.createUser(name, email, password, this);
+    }
+
+    public void setPhotoView(RegisterView.PhotoView photoView) {
+        this.photoView = photoView;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setUri(Uri uri){
+        this.uri = uri;
+        photoView.onImageCropped(uri);
+    }
+
+    public RegisterView.EmailView getEmailView() {
+        return emailView;
+    }
+
     public void showPhotoView() {
         registerView.showNextView(RegisterSteps.PHOTO);
+    }
+
+    public void showCamera() {
+        registerView.showCamera();
+    }
+
+    public void showGallery() {
+        registerView.showGallery();
     }
 
     public void jumpRegistration() {
