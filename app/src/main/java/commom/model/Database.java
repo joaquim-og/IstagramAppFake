@@ -1,5 +1,6 @@
 package commom.model;
 
+import android.net.Uri;
 import android.os.Handler;
 
 import java.util.HashSet;
@@ -9,6 +10,7 @@ public class Database {
 
     private static Set<UserAuth> usersAuth;
     private static Set<User> users;
+    private static Set<Uri> storages;
     private static Database INSTANCE;
     private OnSuccessListener onSuccessListener;
     private OnFailureListener onFailureListener;
@@ -17,6 +19,7 @@ public class Database {
 
     static {
         usersAuth = new HashSet<>();
+        storages = new HashSet<>();
         users = new HashSet<>();
 //
 //        usersAuth.add(new UserAuth("user1@gmail.com", "1"));
@@ -49,6 +52,21 @@ public class Database {
         return this;
     }
 
+    public Database addPhoto(String uuid, Uri uri) {
+        timeout(() -> {
+            Set<User> users =  Database.users;
+            for (User user: users) {
+                if (user.getUuid().equals(uuid)) {
+                    user.setUri(uri);
+                }
+            }
+            storages.add(uri);
+            onSuccessListener.onSuccess(true);
+        });
+
+        return this;
+    }
+
     public Database createUser(String name, String email, String password) {
         timeout(() -> {
             UserAuth userAuth = new UserAuth();
@@ -60,6 +78,7 @@ public class Database {
             User user = new User();
             user.setEmail(email);
             user.setName(name);
+            user.setUuid(userAuth.getUUID());
 
             boolean added = users.add(user);
             if (added) {
@@ -93,6 +112,10 @@ public class Database {
         });
 
         return this;
+    }
+
+    public UserAuth getUser(){
+        return userAuth;
     }
 
     private void timeout(Runnable r) {

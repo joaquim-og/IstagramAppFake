@@ -1,7 +1,11 @@
 package commom.model;
 
+import android.net.Uri;
+
 public class User {
 
+    private String uuid;
+    private Uri uri;
     private String name;
     private String email;
 
@@ -30,6 +34,22 @@ public class User {
 
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         return email != null ? email.equals(user.email) : user.email == null;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     @Override

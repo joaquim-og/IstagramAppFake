@@ -69,8 +69,13 @@ public class RegisterPresenter implements Presenter<UserAuth> {
 
     public void setUri(Uri uri){
         this.uri = uri;
-        if (photoView != null)
+        if (photoView != null) {
             photoView.onImageCropped(uri);
+            photoView.showProgressBar();
+
+            dataSource.addPhoto(uri, new UpdatePhotoCallback());
+        }
+
     }
 
     public RegisterView.EmailView getEmailView() {
@@ -106,5 +111,23 @@ public class RegisterPresenter implements Presenter<UserAuth> {
     @Override
     public void onComplete() {
         setNamePasswordView.hideProgressBar();
+    }
+
+    private class UpdatePhotoCallback implements Presenter<Boolean> {
+
+        @Override
+        public void onSuccess(Boolean response) {
+            registerView.onUserCreated();
+        }
+
+        @Override
+        public void onError(String message) {
+
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
     }
 }
