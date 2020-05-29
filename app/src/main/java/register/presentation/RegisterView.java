@@ -35,7 +35,7 @@ public interface RegisterView {
 
     }
 
-    interface PhotoView {
+    interface PhotoView extends View{
         void onImageCropped(Uri uri);
     }
 
