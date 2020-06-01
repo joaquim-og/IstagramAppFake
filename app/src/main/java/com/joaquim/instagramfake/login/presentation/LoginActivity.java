@@ -11,6 +11,8 @@ import com.joaquim.instagramfake.login.datasource.LoginLocalDataSource;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import commom.model.Database;
+import commom.model.UserAuth;
 import commom.view.AbstractActivity;
 import commom.component.LoadingButton;
 import main.presentation.MainActivity;
@@ -32,6 +34,10 @@ public class LoginActivity extends AbstractActivity implements LoginView {
         super.onCreate(savedInstanceState);
 
         setStatusBarDak();
+
+        UserAuth user = Database.getInstance().getUser();
+        if (user != null)
+            onUserLogged();
     }
 
     @Override
@@ -55,7 +61,8 @@ public class LoginActivity extends AbstractActivity implements LoginView {
 
     @Override
     public void onUserLogged() {
-        MainActivity.launch(this);
+        MainActivity.launch(this, MainActivity.LOGIN_ACTIVITY);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @OnClick(R.id.login_button_enter)
