@@ -32,9 +32,31 @@ public class Database {
     }
 
     public static Database getInstance() {
-        if (INSTANCE == null)
+        if (INSTANCE == null) {
             INSTANCE = new Database();
+            INSTANCE.init();
+        }
         return INSTANCE;
+    }
+
+    private void init() {
+        String email = "user1@gmail.com";
+        String password = "123";
+        String name = "user1";
+
+        UserAuth userAuth = new UserAuth();
+        userAuth.setEmail(email);
+        userAuth.setPassword(password);
+
+        usersAuth.add(userAuth);
+
+        User user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        user.setUuid(userAuth.getUUID());
+
+        users.add(user);
+        this.userAuth = userAuth;
     }
 
     public <T> Database addOnSuccessListener(OnSuccessListener<T> listener) {
@@ -83,11 +105,14 @@ public class Database {
             boolean added = users.add(user);
             if (added) {
                 this.userAuth = userAuth;
-                onSuccessListener.onSuccess(userAuth);
+                if (onSuccessListener != null)
+                    onSuccessListener.onSuccess(userAuth);
             } else {
                 this.userAuth = null;
+                if (onFailureListener != null)
                 onFailureListener.onFailure(new IllegalArgumentException("Usuário já existe"));
             }
+            if (onCompleteListener != null)
             onCompleteListener.onComplete();
         });
 
