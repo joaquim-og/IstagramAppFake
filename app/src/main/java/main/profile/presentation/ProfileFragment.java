@@ -16,9 +16,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.joaquim.instagramfake.R;
 
-public class ProfileFragment extends Fragment {
+import butterknife.BindView;
+import commom.view.AbstractFragment;
+import main.home.presentation.HomeFragment;
+import main.presentation.MainView;
+
+public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
+
+    private MainView mainView;
+
+    @BindView(R.id.profile_recycler)
+    RecyclerView recyclerView;
+
+    public static ProfileFragment newInstance(MainView mainView){
+        ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.setMainView(mainView);
+        return profileFragment;
+    }
 
     public ProfileFragment() {}
+
+    private void setMainView(MainView mainView){
+        this.mainView= mainView;
+    }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -30,14 +51,18 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_main_profile, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.profile_recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(new PostAdaper());
 
 
         return view;
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_main_profile;
     }
 
     @Override

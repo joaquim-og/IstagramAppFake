@@ -1,8 +1,10 @@
 package main.presentation;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joaquim.instagramfake.R;
 import com.joaquim.instagramfake.login.presentation.LoginActivity;
@@ -24,7 +27,7 @@ import main.home.presentation.HomeFragment;
 import main.profile.presentation.ProfileFragment;
 import main.search.presentation.SearchFragment;
 
-public class MainActivity extends AbstractActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AbstractActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainView {
 
     public static final int LOGIN_ACTIVITY = 0;
     public static final int REGISTER_ACTIVITY = 1;
@@ -66,8 +69,8 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     @Override
     protected void onInject() {
-        homeFragment = new HomeFragment();
-        profileFragment = new ProfileFragment();
+        homeFragment = HomeFragment.newInstance(this);
+        profileFragment = ProfileFragment.newInstance(this);
         cameraFragment = new CameraFragment();
         searchFragment = new SearchFragment();
 
@@ -78,16 +81,6 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         fm.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            int source = extras.getInt(ACT_SOURCE);
-            if (source == REGISTER_ACTIVITY){
-                fm.beginTransaction().hide(active).show(profileFragment).commit();
-                active = profileFragment;
-            }
-        }
-
     }
 
     @Override
@@ -96,11 +89,44 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
         BottomNavigationView bv = findViewById(R.id.main_bottom_nav);
+
         bv.setOnNavigationItemSelectedListener(this);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            int source = extras.getInt(ACT_SOURCE);
+            if (source == REGISTER_ACTIVITY){
+                getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
+                active = profileFragment;
+                scrollToolbarEnabled(true);
+            }
+        }
+
+
+    }
+
+    @Override
+    public void scrollToolbarEnabled(boolean enabled) {
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        AppBarLayout appBarLayout = findViewById(R.id.main_appbar);
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        CoordinatorLayout.LayoutParams appBarLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+
+        if (enabled) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+
+            appBarLayoutParams.setBehavior(new AppBarLayout.Behavior());
+            appBarLayout.setLayoutParams(appBarLayoutParams);
+        } else {
+            params.setScrollFlags(0);
+            appBarLayoutParams.setBehavior(null);
+            appBarLayout.setLayoutParams(appBarLayoutParams);
+        }
+
+
     }
 
     @Override
@@ -111,6 +137,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
             case R.id.menu_bottom_home:
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
                 active = homeFragment;
+                scrollToolbarEnabled(false);
                 return true;
             case R.id.menu_bottom_search:
                 fm.beginTransaction().hide(active).show(searchFragment).commit();
@@ -122,6 +149,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 return true;
             case R.id.menu_bottom_profile:
                 fm.beginTransaction().hide(active).show(profileFragment).commit();
+                scrollToolbarEnabled(true);
                 active = profileFragment;
                 return true;
         }
