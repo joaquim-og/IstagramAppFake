@@ -23,7 +23,10 @@ import com.joaquim.instagramfake.login.presentation.LoginActivity;
 
 import commom.view.AbstractActivity;
 import main.camera.presentation.CameraFragment;
+import main.home.datasoure.HomeDataSource;
+import main.home.datasoure.HomeLocalDataSource;
 import main.home.presentation.HomeFragment;
+import main.home.presentation.HomePresenter;
 import main.profile.datasource.ProfileDataSource;
 import main.profile.datasource.ProfileLocalDataSource;
 import main.profile.presentation.ProfileFragment;
@@ -35,6 +38,8 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     public static final int LOGIN_ACTIVITY = 0;
     public static final int REGISTER_ACTIVITY = 1;
     public static String ACT_SOURCE = "act_source";
+    private ProfilePresenter profilePresenter;
+    private HomePresenter homePresenter;
 
     Fragment homeFragment;
     Fragment profileFragment;
@@ -73,9 +78,11 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     @Override
     protected void onInject() {
         ProfileDataSource profileDataSource = new ProfileLocalDataSource();
-        ProfilePresenter profilePresenter = new ProfilePresenter(profileDataSource);
+        HomeDataSource homeDataSource = new HomeLocalDataSource();
+        profilePresenter = new ProfilePresenter(profileDataSource);
+        homePresenter = new HomePresenter(homeDataSource);
 
-        homeFragment = HomeFragment.newInstance(this);
+        homeFragment = HomeFragment.newInstance(this, homePresenter);
         profileFragment = ProfileFragment.newInstance(this, profilePresenter);
         cameraFragment = new CameraFragment();
         searchFragment = new SearchFragment();
@@ -118,6 +125,8 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
                 active = profileFragment;
                 scrollToolbarEnabled(true);
+
+                profilePresenter.findUsers();
             }
         }
 
@@ -153,6 +162,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
             case R.id.menu_bottom_home:
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
                 active = homeFragment;
+                homePresenter.findFeed();
                 scrollToolbarEnabled(false);
                 return true;
             case R.id.menu_bottom_search:
@@ -166,6 +176,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
             case R.id.menu_bottom_profile:
                 fm.beginTransaction().hide(active).show(profileFragment).commit();
                 scrollToolbarEnabled(true);
+                profilePresenter.findUsers();
                 active = profileFragment;
                 return true;
         }

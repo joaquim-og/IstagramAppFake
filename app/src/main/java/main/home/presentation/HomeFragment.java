@@ -17,15 +17,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.joaquim.instagramfake.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import commom.model.Feed;
+import commom.view.AbstractFragment;
 import main.presentation.MainView;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends AbstractFragment<HomePresenter> implements MainView.HomeView {
 
     private MainView mainView;
+    private FeedAdapter feedAdapter;
 
-    public static HomeFragment newInstance(MainView mainView){
+    @BindView(R.id.home_recycler)
+    RecyclerView recyclerView;
+
+    public static HomeFragment newInstance(MainView mainView, HomePresenter homePresenter){
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setMainView(mainView);
+        homeFragment.setPresenter(homePresenter);
+        homePresenter.setView(homeFragment);
         return homeFragment;
     }
 
@@ -45,14 +57,35 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_main_home, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.home_recycler);
+        feedAdapter = new FeedAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new PostAdaper());
+        recyclerView.setAdapter(feedAdapter);
 
 
         return view;
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_main_home;
+    }
+
+    @Override
+    public void showProgressBar() {
+        mainView.showProgressBar();
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mainView.hideProgressBar();
+    }
+
+    @Override
+    public void showFeed(List<Feed> response) {
+        feedAdapter.setFeed(response);
+        feedAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -61,23 +94,9 @@ public class HomeFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private class PostAdaper extends RecyclerView.Adapter<PostViewHolder> {
+    private class FeedAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
-        private int[] images = new int[]{
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-
-        };
+        private List<Feed> feed = new ArrayList<>();
 
         @NonNull
         @Override
@@ -87,12 +106,16 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull PostViewHolder postViewHolder, int i) {
-            postViewHolder.bind(images[i]);
+            postViewHolder.bind(feed.get(i));
         }
 
         @Override
         public int getItemCount() {
-            return images.length;
+            return feed.size();
+        }
+
+        public void setFeed(List<Feed> feed) {
+            this.feed = feed;
         }
     }
 
@@ -106,8 +129,8 @@ public class HomeFragment extends Fragment {
             imagePost = itemView.findViewById(R.id.profile_image_grid);
         }
 
-        public void bind(int image) {
-            this.imagePost.setImageResource(image);
+        public void bind(Feed feed) {
+            this.imagePost.setImageURI(feed.getUri());
         }
     }
 }
