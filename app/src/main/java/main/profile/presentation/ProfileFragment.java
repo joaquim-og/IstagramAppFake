@@ -1,12 +1,17 @@
 package main.profile.presentation;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,21 +21,47 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.joaquim.instagramfake.R;
 
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
+import commom.model.Post;
 import commom.view.AbstractFragment;
+import de.hdodenhof.circleimageview.CircleImageView;
 import main.home.presentation.HomeFragment;
 import main.presentation.MainView;
 
-public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
+public class ProfileFragment extends AbstractFragment<ProfilePresenter> implements MainView.ProfileView {
 
+    private PostAdaper postAdaper;
     private MainView mainView;
 
     @BindView(R.id.profile_recycler)
     RecyclerView recyclerView;
 
-    public static ProfileFragment newInstance(MainView mainView){
+    @BindView(R.id.profile_image_icon)
+    CircleImageView imageViewProfile;
+
+    @BindView(R.id.profile_text_view_username)
+    TextView txtUsername;
+
+    @BindView(R.id.profile_text_view_following_count)
+    TextView txtFollowingCount;
+
+    @BindView(R.id.profile_text_view_followers_count)
+    TextView txtFollowersCount;
+
+    @BindView(R.id.profile_text_view_posts_count)
+    TextView txtPostsCount;
+
+    public static ProfileFragment newInstance(MainView mainView, ProfilePresenter profilePresenter){
         ProfileFragment profileFragment = new ProfileFragment();
+        profileFragment.setPresenter(profilePresenter);
         profileFragment.setMainView(mainView);
+        profilePresenter.setView(profileFragment);
         return profileFragment;
     }
 
@@ -45,6 +76,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        presenter.findUsers();
     }
 
     @Nullable
@@ -53,11 +85,22 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
+        postAdaper = new PostAdaper();
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        recyclerView.setAdapter(new PostAdaper());
+        recyclerView.setAdapter(postAdaper);
 
 
         return view;
+    }
+
+    @Override
+    public void showProgressBar() {
+        mainView.showProgressBar();
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mainView.hideProgressBar();
     }
 
     @Override
@@ -71,23 +114,39 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void showPhoto(Uri photo) {
+
+        try {
+            if (getContext() != null && getContext().getContentResolver() != null) {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photo);
+
+                imageViewProfile.setImageBitmap(bitmap);
+            }
+        } catch (IOException e) {
+            Log.e("tetes", e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public void showData(String name, String following, String followers, String posts) {
+        txtUsername.setText(name);
+        txtFollowersCount.setText(followers);
+        txtFollowingCount.setText(following);
+        txtPostsCount.setText(posts);
+    }
+
+    @Override
+    public void showPosts(List<Post> posts) {
+        postAdaper.setPosts(posts);
+        postAdaper.notifyDataSetChanged();
+    }
+
+
     private class PostAdaper extends RecyclerView.Adapter<PostViewHolder> {
 
-        private int[] images = new int[]{
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-            R.drawable.ic_insta_add,
-
-        };
+        private List<Post> posts = new ArrayList<>();
 
         @NonNull
         @Override
@@ -97,12 +156,16 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
 
         @Override
         public void onBindViewHolder(@NonNull PostViewHolder postViewHolder, int i) {
-            postViewHolder.bind(images[i]);
+            postViewHolder.bind(posts.get(i));
+        }
+
+        public void setPosts(List<Post> posts) {
+            this.posts = posts;
         }
 
         @Override
         public int getItemCount() {
-            return images.length;
+            return posts.size();
         }
     }
 
@@ -116,8 +179,8 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> {
             imagePost = itemView.findViewById(R.id.profileImage_grid);
         }
 
-        public void bind(int image) {
-            this.imagePost.setImageResource(image);
+        public void bind(Post post){
+            this.imagePost.setImageURI(post.getUri());
         }
     }
 }
