@@ -76,7 +76,6 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        presenter.findUsers();
     }
 
     @Nullable

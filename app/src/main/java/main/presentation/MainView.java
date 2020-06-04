@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import java.util.List;
 
+import commom.model.Feed;
 import commom.model.Post;
 import commom.view.View;
 
@@ -17,6 +18,11 @@ public interface MainView extends View {
         void showData(String name, String following, String followers, String posts);
 
         void showPosts(List<Post> posts);
+    }
+
+    public interface HomeView extends View {
+
+        void showFeed(List<Feed> response);
     }
 
 }
