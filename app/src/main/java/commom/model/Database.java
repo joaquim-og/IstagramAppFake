@@ -3,6 +3,8 @@ package commom.model;
 import android.net.Uri;
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +13,8 @@ public class Database {
     private static Set<UserAuth> usersAuth;
     private static Set<User> users;
     private static Set<Uri> storages;
+    private static HashMap<String, HashSet<Post>> posts;
+
     private static Database INSTANCE;
     private OnSuccessListener onSuccessListener;
     private OnFailureListener onFailureListener;
@@ -21,6 +25,7 @@ public class Database {
         usersAuth = new HashSet<>();
         storages = new HashSet<>();
         users = new HashSet<>();
+        posts = new HashMap<>();
 //
 //        usersAuth.add(new UserAuth("user1@gmail.com", "1"));
 //        usersAuth.add(new UserAuth("user2@gmail.com", "12"));
@@ -30,6 +35,7 @@ public class Database {
 //        usersAuth.add(new UserAuth("user6@gmail.com", "12346"));
 
     }
+
 
     public static Database getInstance() {
         if (INSTANCE == null) {
@@ -71,6 +77,51 @@ public class Database {
 
     public Database addOnCompleteListener(OnCompleteListener listener) {
         this.onCompleteListener = listener;
+        return this;
+    }
+
+    // If is relational Database
+    // select * from posts p inner join users u on p.user_id = u.id where u.uuid = ?
+    public Database findPosts(String uuid) {
+        timeout(() -> {
+            HashMap<String, HashSet<Post>> posts = Database.posts;
+            HashSet<Post> res = posts.get(uuid);
+
+            if (res == null)
+                res = new HashSet<>();
+
+            if (onSuccessListener != null)
+                onSuccessListener.onSuccess(new ArrayList<>(res));
+
+            if (onCompleteListener != null)
+                onCompleteListener.onComplete();
+        });
+        return this;
+    }
+
+    // If is relational Database
+    // select * from users where uuid = ?
+    public Database findUser(String uuid) {
+        timeout(() -> {
+            Set<User> users = Database.users;
+            User res = null;
+
+            for (User user: users) {
+                if (user.getUuid().equals(uuid)){
+                    res = user;
+                    break;
+                }
+            }
+
+            if (onSuccessListener != null && res != null){
+                onSuccessListener.onSuccess(res);
+            } else if (onFailureListener != null) {
+                onFailureListener.onFailure(new IllegalArgumentException("usuário não encontrado"));
+            }
+
+            if (onCompleteListener != null)
+                onCompleteListener.onComplete();
+        });
         return this;
     }
 

@@ -24,7 +24,10 @@ import com.joaquim.instagramfake.login.presentation.LoginActivity;
 import commom.view.AbstractActivity;
 import main.camera.presentation.CameraFragment;
 import main.home.presentation.HomeFragment;
+import main.profile.datasource.ProfileDataSource;
+import main.profile.datasource.ProfileLocalDataSource;
 import main.profile.presentation.ProfileFragment;
+import main.profile.presentation.ProfilePresenter;
 import main.search.presentation.SearchFragment;
 
 public class MainActivity extends AbstractActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainView {
@@ -69,8 +72,11 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     @Override
     protected void onInject() {
+        ProfileDataSource profileDataSource = new ProfileLocalDataSource();
+        ProfilePresenter profilePresenter = new ProfilePresenter(profileDataSource);
+
         homeFragment = HomeFragment.newInstance(this);
-        profileFragment = ProfileFragment.newInstance(this);
+        profileFragment = ProfileFragment.newInstance(this, profilePresenter);
         cameraFragment = new CameraFragment();
         searchFragment = new SearchFragment();
 
@@ -81,6 +87,16 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         fm.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
+    }
+
+    @Override
+    public void showProgressBar() {
+        findViewById(R.id.main_progress).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        findViewById(R.id.main_progress).setVisibility(View.GONE);
     }
 
     @Override
