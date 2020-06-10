@@ -2,7 +2,6 @@ package main.presentation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -18,11 +17,10 @@ import android.view.View;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import main.camera.presentation.AddActivity;
 import com.joaquim.instagramfake.R;
-import com.joaquim.instagramfake.login.presentation.LoginActivity;
 
 import commom.view.AbstractActivity;
-import main.camera.presentation.CameraFragment;
 import main.home.datasoure.HomeDataSource;
 import main.home.datasoure.HomeLocalDataSource;
 import main.home.presentation.HomeFragment;
@@ -43,7 +41,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     Fragment homeFragment;
     Fragment profileFragment;
-    Fragment cameraFragment;
+//    Fragment cameraFragment;
     Fragment searchFragment;
     Fragment active;
 
@@ -84,14 +82,14 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
         homeFragment = HomeFragment.newInstance(this, homePresenter);
         profileFragment = ProfileFragment.newInstance(this, profilePresenter);
-        cameraFragment = new CameraFragment();
+//        cameraFragment = new CameraFragment();
         searchFragment = new SearchFragment();
 
         active = homeFragment;
 
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().add(R.id.main_fragment, profileFragment).hide(profileFragment).commit();
-        fm.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
+//        fm.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
     }
@@ -170,8 +168,9 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 active = searchFragment;
                 return true;
             case R.id.menu_bottom_add:
-                fm.beginTransaction().hide(active).show(cameraFragment).commit();
-                active = cameraFragment;
+//                fm.beginTransaction().hide(active).show(cameraFragment).commit();
+//                active = cameraFragment;
+                AddActivity.launch(this);
                 return true;
             case R.id.menu_bottom_profile:
                 fm.beginTransaction().hide(active).show(profileFragment).commit();

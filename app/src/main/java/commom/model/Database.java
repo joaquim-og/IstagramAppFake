@@ -53,7 +53,7 @@ public class Database {
     public static void init() {
         String email = "user1@gmail.com";
         String password = "123";
-        String name = "user1";
+        String name = "Xablaueixon";
 
         UserAuth userAuth = new UserAuth();
         userAuth.setEmail(email);
@@ -217,7 +217,7 @@ public class Database {
     }
 
     private void timeout(Runnable r) {
-        new Handler().postDelayed(r, 2000);
+        new Handler().postDelayed(r, 1000);
     }
 
     public interface OnSuccessListener<T> {
