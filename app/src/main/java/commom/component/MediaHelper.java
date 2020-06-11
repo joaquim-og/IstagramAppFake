@@ -6,12 +6,15 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -24,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import main.camera.presentation.CameraFragment;
+
 import static android.app.Activity.RESULT_OK;
 
 //import androidx.fragment.app.Fragment;
@@ -35,7 +40,7 @@ public class MediaHelper {
 
     private static WeakReference<MediaHelper> INSTANCE;
     private Activity activity;
-    private Fragment fragment;
+    private CameraFragment fragment;
     private Uri mCropimageURI;
     private OnImageCroppedListener listener;
     private Uri mSavedImageUri;
@@ -64,7 +69,7 @@ public class MediaHelper {
         return INSTANCE.get();
     }
 
-    public static MediaHelper getInstance(Fragment fragment){
+    public static MediaHelper getInstance(CameraFragment fragment){
         if (INSTANCE == null){
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
@@ -82,7 +87,7 @@ public class MediaHelper {
         this.activity = activity;
     }
 
-    private void setFragment(Fragment fragment) {
+    private void setFragment(CameraFragment fragment) {
         this.fragment = fragment;
     }
 
@@ -167,6 +172,32 @@ public class MediaHelper {
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
+
+    public boolean checkCameraHardware(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY); //
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public Camera getCameraInstance() {
+        Camera camera = null;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && getContext() != null
+                    && getContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (activity != null)
+                    activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
+                else
+                    fragment.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
+            }
+            camera = Camera.open();
+        } catch (Exception e) {
+
+        }
+
+
+        return camera;
     }
 
     public interface OnImageCroppedListener {

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -48,6 +49,14 @@ public class AddActivity extends AbstractActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                super.onTabSelected(tab);
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+        });
     }
 
     @Override
@@ -56,6 +65,23 @@ public class AddActivity extends AbstractActivity {
         viewPager.setAdapter(adapter);
 
         GalleryFragment galleryFragment = new GalleryFragment();
+        adapter.add(galleryFragment);
+
+        CameraFragment cameraFragment = new CameraFragment();
+        adapter.add(cameraFragment);
+
+        adapter.notifyDataSetChanged();
+        tabLayout.setupWithViewPager(viewPager);
+
+        TabLayout.Tab tableft = tabLayout.getTabAt(0);
+        if (tableft != null)
+            tableft.setText(getString(R.string.gallery));
+
+        TabLayout.Tab tabright = tabLayout.getTabAt(1);
+        if (tabright != null)
+            tabright.setText(getString(R.string.photo));
+
+        viewPager.setCurrentItem(adapter.getCount() - 1);
     }
 
     @Override
