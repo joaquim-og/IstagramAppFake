@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.joaquim.instagramfake.R;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import commom.component.CameraPreview;
 import commom.component.MediaHelper;
 import commom.view.AbstractFragment;
@@ -47,12 +48,6 @@ public class CameraFragment extends AbstractFragment {
 
     public CameraFragment() {}
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
@@ -73,9 +68,22 @@ public class CameraFragment extends AbstractFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (camera != null)
+            camera.release();
+    }
+
+    @OnClick(R.id.camera_image_view_pictue)
+    public void onCameraButtonClick() {
+        progressBar.setVisibility(View.VISIBLE);
+        buttonCamera.setVisibility(View.GONE);
+        camera.takePicture(null, null, (data, camera) -> {
+            mediaHelper.saveCameraFile(data);
+            progressBar.setVisibility(View.GONE);
+            buttonCamera.setVisibility(View.VISIBLE);
+        });
+
     }
 
     @Override
