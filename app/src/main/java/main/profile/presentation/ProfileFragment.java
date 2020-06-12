@@ -71,6 +71,11 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
         this.mainView= mainView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.findUsers();
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

@@ -68,6 +68,12 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.findFeed();
+    }
+
+    @Override
     protected int getLayout() {
         return R.layout.fragment_main_home;
     }

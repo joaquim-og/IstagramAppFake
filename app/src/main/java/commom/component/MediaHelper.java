@@ -72,12 +72,20 @@ public class MediaHelper {
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
             INSTANCE.get().setActivity(activity);
+        } else if (INSTANCE.get() == null) {
+            MediaHelper mediaHelper = new MediaHelper();
+            INSTANCE = new WeakReference<>(mediaHelper);
+            INSTANCE.get().setActivity(activity);
         }
         return INSTANCE.get();
     }
 
     public static MediaHelper getInstance(CameraFragment fragment){
         if (INSTANCE == null){
+            MediaHelper mediaHelper = new MediaHelper();
+            INSTANCE = new WeakReference<>(mediaHelper);
+            INSTANCE.get().setFragment(fragment);
+        } else if (INSTANCE.get() == null) {
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
             INSTANCE.get().setFragment(fragment);
@@ -207,13 +215,15 @@ public class MediaHelper {
         return camera;
     }
 
-    public void saveCameraFile(byte[] data) {
+    public Uri saveCameraFile(byte[] data) {
         File pictureFile = createCameraFile(true);
 
         if (pictureFile == null) {
             Log.d("Teste", "Error creating file, check credentials");
-            return;
+            return null;
         }
+
+        File outputMediaFile = null;
 
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
@@ -237,10 +247,10 @@ public class MediaHelper {
             fos.close();
 
             Matrix matrix = new Matrix();
-            File outputMediaFile = createCameraFile(false);
+            outputMediaFile = createCameraFile(false);
             if (outputMediaFile == null) {
                 Log.d("Teste", "Error creating media file, check credentials");
-                return;
+                return null;
             }
 
             Log.i("Teste", realImage.getWidth() + " x " + realImage.getHeight());
@@ -254,8 +264,12 @@ public class MediaHelper {
             fos.close();
 
         } catch (FileNotFoundException e) {
+            Log.d("teste", e.getLocalizedMessage(), e);
         } catch (IOException e) {
+            Log.d("teste", e.getLocalizedMessage(), e);
         }
+
+        return Uri.fromFile(outputMediaFile);
     }
 
     private static Bitmap rotate(Bitmap bitmap, int degree) {
