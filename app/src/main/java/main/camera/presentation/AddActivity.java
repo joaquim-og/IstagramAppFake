@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +20,7 @@ import com.joaquim.instagramfake.R;
 import butterknife.BindView;
 import commom.view.AbstractActivity;
 
-public class AddActivity extends AbstractActivity {
+public class AddActivity extends AbstractActivity implements AddView {
 
     @BindView(R.id.add_viewpager)
     ViewPager viewPager;
@@ -67,7 +68,7 @@ public class AddActivity extends AbstractActivity {
         GalleryFragment galleryFragment = new GalleryFragment();
         adapter.add(galleryFragment);
 
-        CameraFragment cameraFragment = new CameraFragment();
+        CameraFragment cameraFragment = CameraFragment.newInstance(this);
         adapter.add(cameraFragment);
 
         adapter.notifyDataSetChanged();
@@ -82,6 +83,12 @@ public class AddActivity extends AbstractActivity {
             tabright.setText(getString(R.string.photo));
 
         viewPager.setCurrentItem(adapter.getCount() - 1);
+    }
+
+    @Override
+    public void onImageLoaded(Uri uri) {
+        AddCaptionActivity.launch(this, uri);
+        finish();
     }
 
     @Override

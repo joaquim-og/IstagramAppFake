@@ -1,6 +1,7 @@
 package main.camera.presentation;
 
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -45,8 +46,20 @@ public class CameraFragment extends AbstractFragment {
 
     private MediaHelper mediaHelper;
     private Camera  camera;
+    private AddView addView;
 
     public CameraFragment() {}
+
+    public static CameraFragment newInstance(AddView addView) {
+        CameraFragment cameraFragment = new CameraFragment();
+        cameraFragment.setAddView(addView);
+
+        return cameraFragment;
+    }
+
+    private void setAddView(AddView addView) {
+        this.addView = addView;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
@@ -79,9 +92,13 @@ public class CameraFragment extends AbstractFragment {
         progressBar.setVisibility(View.VISIBLE);
         buttonCamera.setVisibility(View.GONE);
         camera.takePicture(null, null, (data, camera) -> {
-            mediaHelper.saveCameraFile(data);
             progressBar.setVisibility(View.GONE);
             buttonCamera.setVisibility(View.VISIBLE);
+            Uri uri =  mediaHelper.saveCameraFile(data);
+
+            if (uri != null)
+                addView.onImageLoaded(uri);
+
         });
 
     }
