@@ -19,6 +19,7 @@ import com.joaquim.instagramfake.R;
 
 import butterknife.BindView;
 import commom.view.AbstractActivity;
+import main.camera.datasource.GalleryLocalDataSource;
 
 public class AddActivity extends AbstractActivity implements AddView {
 
@@ -65,7 +66,10 @@ public class AddActivity extends AbstractActivity implements AddView {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
-        GalleryFragment galleryFragment = new GalleryFragment();
+        GalleryLocalDataSource galleryLocalDataSource = new GalleryLocalDataSource();
+        GalleryPresenter galleryPresenter = new GalleryPresenter(galleryLocalDataSource);
+
+        GalleryFragment galleryFragment = GalleryFragment.newInstance(this, galleryPresenter);
         adapter.add(galleryFragment);
 
         CameraFragment cameraFragment = CameraFragment.newInstance(this);
