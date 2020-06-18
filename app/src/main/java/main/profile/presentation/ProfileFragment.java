@@ -17,8 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joaquim.instagramfake.R;
 
 import org.w3c.dom.Text;
@@ -57,6 +59,9 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     @BindView(R.id.profile_text_view_posts_count)
     TextView txtPostsCount;
 
+    @BindView(R.id.profile_navigation_tabs)
+    BottomNavigationView bottomNavigationView;
+
     public static ProfileFragment newInstance(MainView mainView, ProfilePresenter profilePresenter){
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setPresenter(profilePresenter);
@@ -81,6 +86,18 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.menu_profile_grid:
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                    return  true;
+                case R.id.menu_profile_list:
+                    recyclerView.setLayoutManager(new LinearLayoutManager((getContext())));
+                    return  true;
+            }
+            return false;
+        });
     }
 
     @Nullable

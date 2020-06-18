@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import commom.model.Feed;
+import commom.model.User;
 import commom.view.AbstractFragment;
 import main.presentation.MainView;
 
@@ -129,14 +131,28 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
     private static class PostViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView imagePost;
+        private final ImageView imageUser;
+        private final TextView textViewCaption;
+        private final TextView textViewUsername;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             imagePost = itemView.findViewById(R.id.profile_image_grid);
+            imageUser = itemView.findViewById(R.id.home_container_user_photo);
+            textViewCaption = itemView.findViewById(R.id.home_container_user_caption);
+            textViewUsername = itemView.findViewById(R.id.home_container_username);
+
         }
 
         public void bind(Feed feed) {
             this.imagePost.setImageURI(feed.getUri());
+            this.textViewCaption.setText(feed.getCaption());
+
+            User user = feed.getPublisher();
+            if (user != null) {
+                this.imageUser.setImageURI(user.getUri());
+                this.textViewUsername.setText(user.getName());
+            }
         }
     }
 }
