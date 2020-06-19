@@ -15,7 +15,7 @@ public class Database {
     private static Set<Uri> storages;
     private static HashMap<String, HashSet<Post>> posts;
     private static HashMap<String, HashSet<Feed>> feed;
-    private static  HashMap<String, HashSet<String>> followers;
+    private static HashMap<String, HashSet<String>> followers;
 
     private static Database INSTANCE;
     private OnSuccessListener onSuccessListener;
@@ -30,6 +30,18 @@ public class Database {
         posts = new HashMap<>();
         feed = new HashMap<>();
         followers = new HashMap<>();
+
+        String email = "user1@gmail.com";
+        String password = "123";
+        String name = "Xablaueixon";
+        init(email, password, name);
+
+        for (int i = 0; i < 30; i++) {
+            email = "user" + i + "@gmail.com";
+            password = "123";
+            name = "Xablaueixon" + i;
+            init(email, password, name);
+        }
 
 //        init();
 //
@@ -52,11 +64,7 @@ public class Database {
 //        return INSTANCE;
     }
 
-    public static void init() {
-        String email = "user1@gmail.com";
-        String password = "123";
-        String name = "Xablaueixon";
-
+    public static void init(String email, String password, String name) {
         UserAuth userAuth = new UserAuth();
         userAuth.setEmail(email);
         userAuth.setPassword(password);
@@ -104,6 +112,21 @@ public class Database {
         return this;
     }
 
+    public Database findUsers(String uuid, String query) {
+        timeout(() -> {
+            ArrayList<User> users = new ArrayList<>();
+            for (User user : Database.users) {
+                if (!user.getUuid().equals(uuid) && user.getName().contains(query)){
+                    users.add(user);
+                }
+            }
+
+            onSuccessListener.onSuccess(users);
+            onCompleteListener.onComplete();
+        });
+        return this;
+    }
+
     // If is relational Database
     // select * from posts p inner join users u on p.user_id = u.id where u.uuid = ?
     public Database findPosts(String uuid) {
@@ -130,14 +153,14 @@ public class Database {
             Set<User> users = Database.users;
             User res = null;
 
-            for (User user: users) {
-                if (user.getUuid().equals(uuid)){
+            for (User user : users) {
+                if (user.getUuid().equals(uuid)) {
                     res = user;
                     break;
                 }
             }
 
-            if (onSuccessListener != null && res != null){
+            if (onSuccessListener != null && res != null) {
                 onSuccessListener.onSuccess(res);
             } else if (onFailureListener != null) {
                 onFailureListener.onFailure(new IllegalArgumentException("usuário não encontrado"));
@@ -151,8 +174,8 @@ public class Database {
 
     public Database addPhoto(String uuid, Uri uri) {
         timeout(() -> {
-            Set<User> users =  Database.users;
-            for (User user: users) {
+            Set<User> users = Database.users;
+            for (User user : users) {
                 if (user.getUuid().equals(uuid)) {
                     user.setUri(uri);
                 }
@@ -255,10 +278,10 @@ public class Database {
             } else {
                 Database.userAuth = null;
                 if (onFailureListener != null)
-                onFailureListener.onFailure(new IllegalArgumentException("Usuário já existe"));
+                    onFailureListener.onFailure(new IllegalArgumentException("Usuário já existe"));
             }
             if (onCompleteListener != null)
-            onCompleteListener.onComplete();
+                onCompleteListener.onComplete();
         });
 
         return this;
@@ -284,7 +307,7 @@ public class Database {
         return this;
     }
 
-    public UserAuth getUser(){
+    public UserAuth getUser() {
         return userAuth;
     }
 

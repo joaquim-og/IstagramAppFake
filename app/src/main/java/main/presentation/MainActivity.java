@@ -17,6 +17,8 @@ import android.view.View;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import commom.model.Database;
 import main.camera.presentation.AddActivity;
 import com.joaquim.instagramfake.R;
 
@@ -29,7 +31,10 @@ import main.profile.datasource.ProfileDataSource;
 import main.profile.datasource.ProfileLocalDataSource;
 import main.profile.presentation.ProfileFragment;
 import main.profile.presentation.ProfilePresenter;
+import main.search.datasource.SearchDataSource;
+import main.search.datasource.SearchLocalDataSource;
 import main.search.presentation.SearchFragment;
+import main.search.presentation.SearchPresenter;
 
 public class MainActivity extends AbstractActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainView {
 
@@ -38,10 +43,11 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     public static String ACT_SOURCE = "act_source";
     private ProfilePresenter profilePresenter;
     private HomePresenter homePresenter;
+    private SearchPresenter searchPresenter;
 
     Fragment homeFragment;
     Fragment profileFragment;
-//    Fragment cameraFragment;
+    //    Fragment cameraFragment;
     Fragment searchFragment;
     Fragment active;
 
@@ -82,8 +88,12 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
         homeFragment = HomeFragment.newInstance(this, homePresenter);
         profileFragment = ProfileFragment.newInstance(this, profilePresenter);
+
+        SearchDataSource searchDataSource = new SearchLocalDataSource();
+        searchPresenter = new SearchPresenter(searchDataSource);
+
 //        cameraFragment = new CameraFragment();
-        searchFragment = new SearchFragment();
+        searchFragment = SearchFragment.newInstance(this, searchPresenter);
 
         active = homeFragment;
 
@@ -102,6 +112,14 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     @Override
     public void hideProgressBar() {
         findViewById(R.id.main_progress).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProfile(String user) {
+        getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
+        active = profileFragment;
+        scrollToolbarEnabled(true);
+        profilePresenter.findUsers(Database.getInstance().getUser().getUUID());
     }
 
     @Override
@@ -124,7 +142,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 active = profileFragment;
                 scrollToolbarEnabled(true);
 
-                profilePresenter.findUsers();
+                profilePresenter.findUsers(Database.getInstance().getUser().getUUID());
             }
         }
 
@@ -166,6 +184,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
             case R.id.menu_bottom_search:
                 fm.beginTransaction().hide(active).show(searchFragment).commit();
                 active = searchFragment;
+                scrollToolbarEnabled(false);
                 return true;
             case R.id.menu_bottom_add:
 //                fm.beginTransaction().hide(active).show(cameraFragment).commit();
