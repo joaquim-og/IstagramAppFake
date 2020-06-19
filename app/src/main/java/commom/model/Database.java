@@ -95,6 +95,33 @@ public class Database {
         return this;
     }
 
+    public Database following(String uuidMe, String uuid) {
+        timeout(() -> {
+            HashMap<String, HashSet<String>> followers = Database.followers;
+            HashSet<String> followersOfuser = followers.get(uuid);
+
+            if (followersOfuser == null)
+                followersOfuser = new HashSet<>();
+
+            boolean following = false;
+
+            for (String userUuid : followersOfuser) {
+                if (userUuid.equals(uuidMe)) {
+                    following = true;
+                    break;
+                }
+            }
+            if (onSuccessListener != null)
+                onSuccessListener.onSuccess(following);
+            else if (onFailureListener != null)
+                onFailureListener.onFailure(new IllegalArgumentException("usuário não encontrado"));
+
+            if (onCompleteListener != null)
+                onCompleteListener.onComplete();
+        });
+        return this;
+    }
+
     public Database findFeed(String uuid) {
         timeout(() -> {
             HashMap<String, HashSet<Feed>> feed = Database.feed;
@@ -116,7 +143,7 @@ public class Database {
         timeout(() -> {
             ArrayList<User> users = new ArrayList<>();
             for (User user : Database.users) {
-                if (!user.getUuid().equals(uuid) && user.getName().contains(query)){
+                if (!user.getUuid().equals(uuid) && user.getName().contains(query)) {
                     users.add(user);
                 }
             }

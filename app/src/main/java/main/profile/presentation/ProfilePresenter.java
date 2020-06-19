@@ -12,19 +12,29 @@ import main.profile.datasource.ProfileDataSource;
 
 public class ProfilePresenter implements Presenter<UserProfile> {
     private final ProfileDataSource dataSource;
+    private final String user;
     private MainView.ProfileView view;
 
     public ProfilePresenter(ProfileDataSource dataSource) {
+        this(dataSource, Database.getInstance().getUser().getUUID());
+    }
+
+    public ProfilePresenter(ProfileDataSource dataSource, String user) {
         this.dataSource = dataSource;
+        this.user = user;
     }
 
     public void setView(MainView.ProfileView view) {
         this.view = view;
     }
 
-    public void findUsers(String user) {
+    public void findUsers() {
         view.showProgressBar();
         dataSource.findUser(user, this);
+    }
+
+    public String getUser() {
+        return user;
     }
 
     @Override
@@ -39,7 +49,8 @@ public class ProfilePresenter implements Presenter<UserProfile> {
                 String.valueOf(user.getFollowing()),
                 String.valueOf(user.getFollowers()),
                 String.valueOf(user.getPosts()),
-                editProfile
+                editProfile,
+                userProfile.isFollowing()
         );
 
         view.showPosts(posts);
