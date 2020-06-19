@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import commom.model.Database;
 import main.camera.presentation.AddActivity;
+
 import com.joaquim.instagramfake.R;
 
 import commom.view.AbstractActivity;
@@ -50,6 +52,8 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     //    Fragment cameraFragment;
     Fragment searchFragment;
     Fragment active;
+
+    ProfileFragment profileDetailFragment;
 
     public static void launch(Context context, int source) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -116,10 +120,39 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     @Override
     public void showProfile(String user) {
-        getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
-        active = profileFragment;
+        ProfileDataSource profileLocalDataSource = new ProfileLocalDataSource();
+        ProfilePresenter profilePresenter = new ProfilePresenter(profileLocalDataSource, user);
+
+        profileDetailFragment = ProfileFragment.newInstance(this, profilePresenter);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.main_fragment, profileDetailFragment, "detail");
+        transaction.hide(active);
+        transaction.commit();
+
         scrollToolbarEnabled(true);
-        profilePresenter.findUsers(Database.getInstance().getUser().getUUID());
+
+        if (getSupportActionBar() != null) {
+            Drawable drawable = findDrawable(R.drawable.ic_arrow_back);
+            getSupportActionBar().setHomeAsUpIndicator(drawable);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public void disposeProfileDetail() {
+        if (getSupportActionBar() != null) {
+            Drawable drawable = findDrawable(R.drawable.ic_insta_camera);
+            getSupportActionBar().setHomeAsUpIndicator(drawable);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(profileDetailFragment);
+        transaction.show(active);
+        transaction.commit();
+
+        profileDetailFragment = null;
     }
 
     @Override
@@ -137,12 +170,12 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int source = extras.getInt(ACT_SOURCE);
-            if (source == REGISTER_ACTIVITY){
+            if (source == REGISTER_ACTIVITY) {
                 getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
                 active = profileFragment;
                 scrollToolbarEnabled(true);
 
-                profilePresenter.findUsers(Database.getInstance().getUser().getUUID());
+                profilePresenter.findUsers();
             }
         }
 
@@ -176,26 +209,33 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         FragmentManager fm = getSupportFragmentManager();
         switch (menuItem.getItemId()) {
             case R.id.menu_bottom_home:
+                if (profileDetailFragment != null)
+                    disposeProfileDetail();
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
                 active = homeFragment;
 //                homePresenter.findFeed();
                 scrollToolbarEnabled(false);
                 return true;
             case R.id.menu_bottom_search:
+                if (profileDetailFragment == null){
                 fm.beginTransaction().hide(active).show(searchFragment).commit();
                 active = searchFragment;
-                scrollToolbarEnabled(false);
+                scrollToolbarEnabled(false);}
                 return true;
+
             case R.id.menu_bottom_add:
 //                fm.beginTransaction().hide(active).show(cameraFragment).commit();
 //                active = cameraFragment;
                 AddActivity.launch(this);
                 return true;
+
             case R.id.menu_bottom_profile:
+                if (profileDetailFragment != null)
+                    disposeProfileDetail();
                 fm.beginTransaction().hide(active).show(profileFragment).commit();
-                scrollToolbarEnabled(true);
-//                profilePresenter.findUsers();
                 active = profileFragment;
+                scrollToolbarEnabled(true);
+                profilePresenter.findUsers();
                 return true;
         }
         return false;

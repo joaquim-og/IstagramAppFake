@@ -13,12 +13,14 @@ public interface MainView extends View {
 
     void showProfile(String user);
 
+    void disposeProfileDetail();
+
     void scrollToolbarEnabled(boolean enabled);
 
     public interface ProfileView extends View {
         void showPhoto(Uri photo);
 
-        void showData(String name, String following, String followers, String posts, boolean editProfile);
+        void showData(String name, String following, String followers, String posts, boolean editProfile, boolean follow);
 
         void showPosts(List<Post> posts);
     }
