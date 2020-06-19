@@ -10,12 +10,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,17 +23,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.joaquim.instagramfake.R;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import commom.model.Database;
 import commom.model.Post;
 import commom.view.AbstractFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
-import main.home.presentation.HomeFragment;
 import main.presentation.MainView;
 
 public class ProfileFragment extends AbstractFragment<ProfilePresenter> implements MainView.ProfileView {
@@ -62,6 +60,9 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     @BindView(R.id.profile_navigation_tabs)
     BottomNavigationView bottomNavigationView;
 
+    @BindView(R.id.profile_button_edit_profile)
+    Button button;
+
     public static ProfileFragment newInstance(MainView mainView, ProfilePresenter profilePresenter){
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setPresenter(profilePresenter);
@@ -79,7 +80,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     @Override
     public void onResume() {
         super.onResume();
-        presenter.findUsers();
+        presenter.findUsers(Database.getInstance().getUser().getUUID());
     }
 
     @Override
@@ -151,11 +152,17 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     }
 
     @Override
-    public void showData(String name, String following, String followers, String posts) {
+    public void showData(String name, String following, String followers, String posts, boolean editProfile) {
         txtUsername.setText(name);
         txtFollowersCount.setText(followers);
         txtFollowingCount.setText(following);
         txtPostsCount.setText(posts);
+
+        if (editProfile) {
+            button.setText(R.string.edit_profile);
+        } else {
+            button.setText(R.string.follow);
+        }
     }
 
     @Override

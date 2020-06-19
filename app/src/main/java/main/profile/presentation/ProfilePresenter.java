@@ -2,6 +2,7 @@ package main.profile.presentation;
 
 import java.util.List;
 
+import commom.model.Database;
 import commom.model.Post;
 import commom.model.User;
 import commom.presenter.Presenter;
@@ -21,9 +22,9 @@ public class ProfilePresenter implements Presenter<UserProfile> {
         this.view = view;
     }
 
-    public void findUsers() {
+    public void findUsers(String user) {
         view.showProgressBar();
-        dataSource.findUser(this);
+        dataSource.findUser(user, this);
     }
 
     @Override
@@ -31,11 +32,14 @@ public class ProfilePresenter implements Presenter<UserProfile> {
         User user = userProfile.getUser();
         List<Post> posts = userProfile.getPosts();
 
+        boolean editProfile = user.getUuid().equals(Database.getInstance().getUser().getUUID());
+
         view.showData(
                 user.getName(),
                 String.valueOf(user.getFollowing()),
                 String.valueOf(user.getFollowers()),
-                String.valueOf(user.getPosts())
+                String.valueOf(user.getPosts()),
+                editProfile
         );
 
         view.showPosts(posts);

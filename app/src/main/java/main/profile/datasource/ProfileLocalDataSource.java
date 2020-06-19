@@ -7,18 +7,17 @@ import commom.model.Post;
 import commom.model.User;
 import commom.model.UserProfile;
 import commom.presenter.Presenter;
-import main.profile.presentation.ProfilePresenter;
 
 public class ProfileLocalDataSource implements ProfileDataSource {
 
     @Override
-    public void findUser(Presenter<UserProfile> presenter) {
+    public void findUser(String user, Presenter<UserProfile> presenter) {
         Database db = Database.getInstance();
-        db.findUser(db.getUser().getUUID())
-                .addOnSuccessListener((Database.OnSuccessListener<User>) user ->{
-                    db.findPosts(user.getUuid())
+        db.findUser(user)
+                .addOnSuccessListener((Database.OnSuccessListener<User>) user1 ->{
+                    db.findPosts(user1.getUuid())
                             .addOnSuccessListener((Database.OnSuccessListener<List<Post>>) posts -> {
-                                    presenter.onSuccess(new UserProfile(user, posts));
+                                    presenter.onSuccess(new UserProfile(user1, posts));
                                     presenter.onComplete();
                             });
                 });
