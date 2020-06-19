@@ -175,14 +175,19 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
             button.setText(R.string.edit_profile);
         } else if (follow){
             button.setText(R.string.unfollow);
+            button.setTag(false);
         } else {
             button.setText(R.string.follow);
+            button.setTag(true);
         }
     }
 
     @OnClick(R.id.profile_button_edit_profile)
     public void onButtonFollowClick() {
-
+        Boolean follow = (Boolean) button.getTag();
+        button.setText(follow ? R.string.unfollow : R.string.follow);
+        presenter.follow(follow);
+        button.setTag(!follow);
     }
 
     @Override
