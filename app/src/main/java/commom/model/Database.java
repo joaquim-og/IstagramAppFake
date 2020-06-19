@@ -95,6 +95,47 @@ public class Database {
         return this;
     }
 
+    public Database follow(String uuidMe, String uuid){
+        timeout(() -> {
+            HashMap<String, HashSet<String>> followersMap = Database.followers;
+
+            HashSet<String> followers = followersMap.get(uuid);
+
+            if (followers == null) {
+                followers = new HashSet<>();
+                followersMap.put(uuid, followers);
+            }
+
+            followers.add(uuidMe);
+
+            if (onSuccessListener != null)
+                onSuccessListener.onSuccess(true);
+        });
+
+        return this;
+    }
+
+    public Database unfollow(String uuidMe, String uuid){
+        timeout(() -> {
+            HashMap<String, HashSet<String>> followersMap = Database.followers;
+
+            HashSet<String> followers = followersMap.get(uuid);
+
+            if (followers == null) {
+                followers = new HashSet<>();
+                followersMap.put(uuid, followers);
+            }
+
+            followers.remove(uuidMe);
+
+            if (onSuccessListener != null)
+                onSuccessListener.onSuccess(true);
+
+        });
+
+        return this;
+    }
+
     public Database following(String uuidMe, String uuid) {
         timeout(() -> {
             HashMap<String, HashSet<String>> followers = Database.followers;
