@@ -9,6 +9,7 @@ public class User {
     private String name;
     private  int following, followers, posts;
     private String email;
+    private String photoUrl;
 
     public String getName() {
         return name;
@@ -71,6 +72,14 @@ public class User {
 
     public int getPosts() {
         return posts;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public void setPosts(int posts) {

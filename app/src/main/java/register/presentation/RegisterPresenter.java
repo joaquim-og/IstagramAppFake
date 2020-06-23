@@ -2,16 +2,18 @@ package register.presentation;
 
 import android.net.Uri;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.joaquim.instagramfake.R;
 
 import commom.model.UserAuth;
 import commom.presenter.Presenter;
 import commom.util.Strings;
+import register.datasource.RegisterDataSource;
 import register.datasource.RegisterLocalDataSource;
 
-public class RegisterPresenter implements Presenter<UserAuth> {
+public class RegisterPresenter implements Presenter<FirebaseUser> {
 
-    private final RegisterLocalDataSource dataSource;
+    private final RegisterDataSource dataSource;
     private RegisterView.EmailView emailView;
     private RegisterView.NamePasswordView setNamePasswordView;
     private RegisterView registerView;
@@ -21,7 +23,7 @@ public class RegisterPresenter implements Presenter<UserAuth> {
     private String name;
     private Uri uri;
 
-    public RegisterPresenter(RegisterLocalDataSource dataSource) {
+    public RegisterPresenter(RegisterDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -56,7 +58,7 @@ public class RegisterPresenter implements Presenter<UserAuth> {
         this.name = name;
 
         setNamePasswordView.showProgressBar();
-        dataSource.createUser(name, email, password, this);
+        dataSource.createUser(name.toLowerCase(), email, password, this);
     }
 
     public void setPhotoView(RegisterView.PhotoView photoView) {
@@ -99,7 +101,7 @@ public class RegisterPresenter implements Presenter<UserAuth> {
     }
 
     @Override
-    public void onSuccess(UserAuth response) {
+    public void onSuccess(FirebaseUser response) {
         registerView.showNextView(RegisterSteps.WELCOME);
     }
 
