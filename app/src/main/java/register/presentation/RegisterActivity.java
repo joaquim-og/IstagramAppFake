@@ -30,6 +30,8 @@ import butterknife.OnClick;
 import commom.component.MediaHelper;
 import commom.view.AbstractActivity;
 import main.presentation.MainActivity;
+import register.datasource.RegisterDataSource;
+import register.datasource.RegisterFireDataSource;
 import register.datasource.RegisterLocalDataSource;
 
 public class RegisterActivity extends AbstractActivity implements RegisterView, MediaHelper.OnImageCroppedListener {
@@ -67,7 +69,7 @@ public class RegisterActivity extends AbstractActivity implements RegisterView, 
 
     @Override
     protected void onInject() {
-        RegisterLocalDataSource dataSource = new RegisterLocalDataSource();
+        RegisterDataSource dataSource = new RegisterFireDataSource();
         presenter = new RegisterPresenter(dataSource);
         presenter.setRegisterView(this);
 
