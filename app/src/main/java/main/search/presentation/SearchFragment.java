@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.joaquim.instagramfake.R;
 
 import java.util.ArrayList;
@@ -137,7 +138,7 @@ public class SearchFragment extends AbstractFragment<SearchPresenter> implements
 
         public void bind (User user) {
             this.textViewUsername.setText(user.getName());
-            this.imageUser.setImageURI(user.getUri());
+            Glide.with(itemView.getContext()).load(user.getPhotoUrl()).into(imageUser);
             this.textViewName.setText(user.getName());
         }
 

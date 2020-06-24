@@ -1,5 +1,6 @@
 package com.joaquim.instagramfake.login.presentation;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.joaquim.instagramfake.R;
 import com.joaquim.instagramfake.login.datasource.LoginDataSource;
 
@@ -9,7 +10,7 @@ import commom.model.UserAuth;
 import commom.presenter.Presenter;
 import commom.util.Strings;
 
-class LoginPresenter implements Presenter<UserAuth> {
+class LoginPresenter implements Presenter<FirebaseUser> {
 
     private final LoginView view;
     private final LoginDataSource dataSource;
@@ -30,7 +31,7 @@ class LoginPresenter implements Presenter<UserAuth> {
     }
 
     @Override
-    public void onSuccess(UserAuth userAuth) {
+    public void onSuccess(FirebaseUser userAuth) {
         view.onUserLogged();
     }
 
