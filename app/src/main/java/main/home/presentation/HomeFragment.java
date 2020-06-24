@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.joaquim.instagramfake.R;
 
 import java.util.ArrayList;
@@ -145,12 +146,12 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
         }
 
         public void bind(Feed feed) {
-            this.imagePost.setImageURI(feed.getUri());
+            Glide.with(itemView.getContext()).load(feed.getPhotoUrl()).into(this.imagePost);
             this.textViewCaption.setText(feed.getCaption());
 
             User user = feed.getPublisher();
             if (user != null) {
-                this.imageUser.setImageURI(user.getUri());
+                Glide.with(itemView.getContext()).load(user.getPhotoUrl()).into(this.imageUser);
                 this.textViewUsername.setText(user.getName());
             }
         }

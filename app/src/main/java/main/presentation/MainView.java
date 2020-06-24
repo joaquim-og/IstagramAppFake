@@ -18,7 +18,7 @@ public interface MainView extends View {
     void scrollToolbarEnabled(boolean enabled);
 
     public interface ProfileView extends View {
-        void showPhoto(Uri photo);
+        void showPhoto(String photo);
 
         void showData(String name, String following, String followers, String posts, boolean editProfile, boolean follow);
 

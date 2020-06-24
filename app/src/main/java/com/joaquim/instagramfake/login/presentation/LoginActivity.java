@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.joaquim.instagramfake.R;
 import com.joaquim.instagramfake.login.datasource.LoginDataSource;
+import com.joaquim.instagramfake.login.datasource.LoginFireDataSource;
 import com.joaquim.instagramfake.login.datasource.LoginLocalDataSource;
 
 import butterknife.BindView;
@@ -35,14 +37,14 @@ public class LoginActivity extends AbstractActivity implements LoginView {
 
         setStatusBarDak();
 
-        UserAuth user = Database.getInstance().getUser();
+        String user = FirebaseAuth.getInstance().getUid();
         if (user != null)
             onUserLogged();
     }
 
     @Override
     protected void onInject() {
-        LoginDataSource dataSource = new LoginLocalDataSource();
+        LoginDataSource dataSource = new LoginFireDataSource();
         presenter = new LoginPresenter(this, dataSource);
     }
 

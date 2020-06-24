@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.joaquim.instagramfake.R;
 
 import java.io.IOException;
@@ -65,7 +67,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     @BindView(R.id.profile_button_edit_profile)
     Button button;
 
-    public static ProfileFragment newInstance(MainView mainView, ProfilePresenter profilePresenter){
+    public static ProfileFragment newInstance(MainView mainView, ProfilePresenter profilePresenter) {
         ProfileFragment profileFragment = new ProfileFragment();
         profileFragment.setPresenter(profilePresenter);
         profileFragment.setMainView(mainView);
@@ -73,10 +75,11 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
         return profileFragment;
     }
 
-    public ProfileFragment() {}
+    public ProfileFragment() {
+    }
 
-    private void setMainView(MainView mainView){
-        this.mainView= mainView;
+    private void setMainView(MainView mainView) {
+        this.mainView = mainView;
     }
 
     @Override
@@ -94,10 +97,10 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
             switch (menuItem.getItemId()) {
                 case R.id.menu_profile_grid:
                     recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                    return  true;
+                    return true;
                 case R.id.menu_profile_list:
                     recyclerView.setLayoutManager(new LinearLayoutManager((getContext())));
-                    return  true;
+                    return true;
             }
             return false;
         });
@@ -142,7 +145,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (!presenter.getUser().equals(Database.getInstance().getUser().getUUID()))
+                if (!presenter.getUser().equals(FirebaseAuth.getInstance().getUid()))
                     mainView.disposeProfileDetail();
                 break;
         }
@@ -150,18 +153,8 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     }
 
     @Override
-    public void showPhoto(Uri photo) {
-
-        try {
-            if (getContext() != null && getContext().getContentResolver() != null) {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photo);
-
-                imageViewProfile.setImageBitmap(bitmap);
-            }
-        } catch (IOException e) {
-            Log.e("tetes", e.getMessage(), e);
-        }
-
+    public void showPhoto(String photo) {
+        Glide.with(getContext()).load(photo).into(imageViewProfile);
     }
 
     @Override
@@ -173,7 +166,8 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
 
         if (editProfile) {
             button.setText(R.string.edit_profile);
-        } else if (follow){
+            button.setTag(null);
+        } else if (follow) {
             button.setText(R.string.unfollow);
             button.setTag(false);
         } else {
@@ -185,9 +179,12 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
     @OnClick(R.id.profile_button_edit_profile)
     public void onButtonFollowClick() {
         Boolean follow = (Boolean) button.getTag();
-        button.setText(follow ? R.string.unfollow : R.string.follow);
-        presenter.follow(follow);
-        button.setTag(!follow);
+
+        if (follow != null) {
+            button.setText(follow ? R.string.unfollow : R.string.follow);
+            presenter.follow(follow);
+            button.setTag(!follow);
+        }
     }
 
     @Override
@@ -232,8 +229,8 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter> implemen
             imagePost = itemView.findViewById(R.id.profileImage_grid);
         }
 
-        public void bind(Post post){
-            this.imagePost.setImageURI(post.getUri());
+        public void bind(Post post) {
+            Glide.with(itemView.getContext()).load(post.getPhotoUrl()).into(imagePost);
         }
     }
 }

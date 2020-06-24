@@ -31,10 +31,10 @@ public class Database {
         feed = new HashMap<>();
         followers = new HashMap<>();
 
-//        String email = "user1@gmail.com";
-//        String password = "123";
-//        String name = "Xablaueixon";
-//        init(email, password, name);
+        String email = "user1@gmail.com";
+        String password = "123";
+        String name = "Xablaueixon";
+        init(email, password, name);
 //
 //        for (int i = 0; i < 30; i++) {
 //            email = "user" + i + "@gmail.com";
