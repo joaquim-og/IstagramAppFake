@@ -1,7 +1,9 @@
 package main.camera.presentation;
 
 import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import commom.view.AbstractFragment;
 
-public class GalleryFragment extends AbstractFragment<GalleryPresenter> implements  GalleryView {
+public class GalleryFragment extends AbstractFragment<GalleryPresenter> implements GalleryView {
 
     @BindView(R.id.main_gallery_scrool_view)
     NestedScrollView nestedScrollView;
@@ -70,9 +72,17 @@ public class GalleryFragment extends AbstractFragment<GalleryPresenter> implemen
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getContext() != null && getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+        } else  {
+            presenter.findPictures(getContext());
+        }
+    }
 
-        presenter.findPictures(getContext());
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        addView.dispose();
     }
 
     @Override
@@ -85,7 +95,7 @@ public class GalleryFragment extends AbstractFragment<GalleryPresenter> implemen
         pictureAdapter.sePictures(uris, uri1 -> {
             this.uri = uri1;
             imageViewMain.setImageURI(uri1);
-            nestedScrollView.smoothScrollTo(0,0);
+            nestedScrollView.smoothScrollTo(0, 0);
         });
     }
 

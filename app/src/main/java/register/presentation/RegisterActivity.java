@@ -1,6 +1,8 @@
 package register.presentation;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -9,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -131,10 +134,18 @@ public class RegisterActivity extends AbstractActivity implements RegisterView, 
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            showCamera();
+        }
+    }
+
+    @Override
     public void onUserCreated() {
         MainActivity.launch(this, MainActivity.REGISTER_ACTIVITY);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void showCamera() {
         mediaHelper.chooserCamera();

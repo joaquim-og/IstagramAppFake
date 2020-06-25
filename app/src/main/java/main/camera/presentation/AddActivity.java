@@ -96,6 +96,11 @@ public class AddActivity extends AbstractActivity implements AddView {
     }
 
     @Override
+    public void dispose() {
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:

@@ -108,7 +108,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         fm.beginTransaction().add(R.id.main_fragment, profileFragment).hide(profileFragment).commit();
 //        fm.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
         fm.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
-        fm.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
+        fm.beginTransaction().add(R.id.main_fragment, homeFragment).commit();
     }
 
     @Override
@@ -216,7 +216,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                     disposeProfileDetail();
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
                 active = homeFragment;
-//                homePresenter.findFeed();
+                homePresenter.findFeed();
                 scrollToolbarEnabled(false);
                 return true;
             case R.id.menu_bottom_search:

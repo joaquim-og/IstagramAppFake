@@ -61,14 +61,14 @@ public class MediaHelper {
                 listener.onImageCropped(uri);
                 cropImageView.setVisibility(View.GONE);
             }
-            
+
         });
-        
+
         return this;
     }
 
-    public static MediaHelper getInstance(Activity activity){
-        if (INSTANCE == null){
+    public static MediaHelper getInstance(Activity activity) {
+        if (INSTANCE == null) {
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
             INSTANCE.get().setActivity(activity);
@@ -80,8 +80,8 @@ public class MediaHelper {
         return INSTANCE.get();
     }
 
-    public static MediaHelper getInstance(CameraFragment fragment){
-        if (INSTANCE == null){
+    public static MediaHelper getInstance(CameraFragment fragment) {
+        if (INSTANCE == null) {
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
             INSTANCE.get().setFragment(fragment);
@@ -93,7 +93,7 @@ public class MediaHelper {
         return INSTANCE.get();
     }
 
-    public void chooserGallery(){
+    public void chooserGallery() {
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         activity.startActivityForResult(i, GALLERY_CODE);
     }
@@ -111,14 +111,14 @@ public class MediaHelper {
         SharedPreferences myPrefes = getContext().getSharedPreferences("camera_image", 0);
         String url = myPrefes.getString("url", null);
 
-        if (mCropimageURI == null && url != null){
+        if (mCropimageURI == null && url != null) {
             mCropimageURI = Uri.parse(url);
         }
 
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
             if (CropImage.isReadExternalStoragePermissionsRequired(getContext(), mCropimageURI)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (activity != null){
+                    if (activity != null) {
                         activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
                     } else {
                         fragment.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
@@ -155,7 +155,13 @@ public class MediaHelper {
         cropImageView.saveCroppedImageAsync(mSavedImageUri);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void chooserCamera() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getContext() != null && getContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
+            return;
+        }
+
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (i.resolveActivity(getContext().getPackageManager()) != null) {
@@ -183,7 +189,7 @@ public class MediaHelper {
 
     private File createImageFile() throws IOException {
         String timestamp = new SimpleDateFormat("yyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "JPEG_"+ timestamp + "_";
+        String imageFileName = "JPEG_" + timestamp + "_";
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         return File.createTempFile(imageFileName, ".jpg", storageDir);
@@ -194,17 +200,15 @@ public class MediaHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public Camera getCameraInstance() {
+    public Camera getCameraInstance(CameraFragment fragment, Context context) {
         Camera camera = null;
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && getContext() != null
-                    && getContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                if (activity != null)
-                    activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
-                else
-                    fragment.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
+                    && fragment != null
+                    && context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                fragment.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
+                return null;
             }
             camera = Camera.open();
         } catch (Exception e) {
@@ -286,7 +290,7 @@ public class MediaHelper {
         if (getContext() == null) return null;
 
         File mediaStorageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (mediaStorageDir != null && !mediaStorageDir.exists()){
+        if (mediaStorageDir != null && !mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 Log.d("teste", "failed to create dir");
                 return null;
@@ -302,5 +306,5 @@ public class MediaHelper {
 
         void onImagePicked(Uri uri);
     }
-    
+
 }
