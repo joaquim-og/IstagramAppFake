@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,12 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.joaquim.instagramfake.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import commom.component.CustomDialog;
 import commom.model.Feed;
 import commom.model.User;
 import commom.view.AbstractFragment;
@@ -36,7 +39,7 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
     @BindView(R.id.home_recycler)
     RecyclerView recyclerView;
 
-    public static HomeFragment newInstance(MainView mainView, HomePresenter homePresenter){
+    public static HomeFragment newInstance(MainView mainView, HomePresenter homePresenter) {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setMainView(mainView);
         homeFragment.setPresenter(homePresenter);
@@ -44,10 +47,11 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
         return homeFragment;
     }
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
-    private void setMainView(MainView mainView){
-        this.mainView= mainView;
+    private void setMainView(MainView mainView) {
+        this.mainView = mainView;
     }
 
     @Override
@@ -69,6 +73,30 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
 
         return view;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                CustomDialog customDialog = new CustomDialog.Builder(getContext())
+                        .setTitle(R.string.logout)
+                        .addButton((v) -> {
+                            switch (v.getId()) {
+                                case R.string.logout_action:
+                                    FirebaseAuth.getInstance().signOut();
+                                    mainView.logout();
+                                    break;
+                                case R.string.cancel:
+                                    break;
+                            }
+                        }, R.string.logout_action, R.string.cancel)
+                        .build();
+                        customDialog.show();
+                        return true;
+        }
+        return super.onOptionsItemSelected(item);
+}
 
     @Override
     public void onResume() {
@@ -103,57 +131,57 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private class FeedAdapter extends RecyclerView.Adapter<PostViewHolder> {
+private class FeedAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
-        private List<Feed> feed = new ArrayList<>();
+    private List<Feed> feed = new ArrayList<>();
 
-        @NonNull
-        @Override
-        public PostViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            return new PostViewHolder(getLayoutInflater().inflate(R.layout.item_post_list, viewGroup, false));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull PostViewHolder postViewHolder, int i) {
-            postViewHolder.bind(feed.get(i));
-        }
-
-        @Override
-        public int getItemCount() {
-            return feed.size();
-        }
-
-        public void setFeed(List<Feed> feed) {
-            this.feed = feed;
-        }
+    @NonNull
+    @Override
+    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        return new PostViewHolder(getLayoutInflater().inflate(R.layout.item_post_list, viewGroup, false));
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull PostViewHolder postViewHolder, int i) {
+        postViewHolder.bind(feed.get(i));
+    }
 
-    private static class PostViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemCount() {
+        return feed.size();
+    }
 
-        private final ImageView imagePost;
-        private final ImageView imageUser;
-        private final TextView textViewCaption;
-        private final TextView textViewUsername;
+    public void setFeed(List<Feed> feed) {
+        this.feed = feed;
+    }
+}
 
-        public PostViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imagePost = itemView.findViewById(R.id.profile_image_grid);
-            imageUser = itemView.findViewById(R.id.home_container_user_photo);
-            textViewCaption = itemView.findViewById(R.id.home_container_user_caption);
-            textViewUsername = itemView.findViewById(R.id.home_container_username);
 
-        }
+private static class PostViewHolder extends RecyclerView.ViewHolder {
 
-        public void bind(Feed feed) {
-            Glide.with(itemView.getContext()).load(feed.getPhotoUrl()).into(this.imagePost);
-            this.textViewCaption.setText(feed.getCaption());
+    private final ImageView imagePost;
+    private final ImageView imageUser;
+    private final TextView textViewCaption;
+    private final TextView textViewUsername;
 
-            User user = feed.getPublisher();
-            if (user != null) {
-                Glide.with(itemView.getContext()).load(user.getPhotoUrl()).into(this.imageUser);
-                this.textViewUsername.setText(user.getName());
-            }
+    public PostViewHolder(@NonNull View itemView) {
+        super(itemView);
+        imagePost = itemView.findViewById(R.id.profile_image_grid);
+        imageUser = itemView.findViewById(R.id.home_container_user_photo);
+        textViewCaption = itemView.findViewById(R.id.home_container_user_caption);
+        textViewUsername = itemView.findViewById(R.id.home_container_username);
+
+    }
+
+    public void bind(Feed feed) {
+        Glide.with(itemView.getContext()).load(feed.getPhotoUrl()).into(this.imagePost);
+        this.textViewCaption.setText(feed.getCaption());
+
+        User user = feed.getPublisher();
+        if (user != null) {
+            Glide.with(itemView.getContext()).load(user.getPhotoUrl()).into(this.imageUser);
+            this.textViewUsername.setText(user.getName());
         }
     }
+}
 }
