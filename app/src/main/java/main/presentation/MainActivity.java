@@ -23,6 +23,7 @@ import commom.model.Database;
 import main.camera.presentation.AddActivity;
 
 import com.joaquim.instagramfake.R;
+import com.joaquim.instagramfake.login.presentation.LoginActivity;
 
 import commom.view.AbstractActivity;
 import main.home.datasoure.HomeDataSource;
@@ -156,6 +157,11 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         transaction.commit();
 
         profileDetailFragment = null;
+    }
+
+    @Override
+    public void logout() {
+        LoginActivity.launch(this);
     }
 
     @Override

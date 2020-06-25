@@ -17,6 +17,8 @@ public interface MainView extends View {
 
     void scrollToolbarEnabled(boolean enabled);
 
+    void logout();
+
     public interface ProfileView extends View {
         void showPhoto(String photo);
 

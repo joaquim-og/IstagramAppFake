@@ -66,19 +66,35 @@ public class ProfileFireDataSource implements ProfileDataSource {
 
     @Override
     public void follow(String uid) {
-        FirebaseFirestore.getInstance()
+        DocumentReference toFollow = FirebaseFirestore.getInstance()
                 .collection("user")
-                .document("uid")
-                .get()
+                .document("uid");
+
+
+                toFollow.get()
                 .addOnCompleteListener(task -> {
                     User user = task.getResult().toObject(User.class);
 
-                    FirebaseFirestore.getInstance()
+                    FirebaseFirestore.getInstance().runTransaction(transaction -> {
+                        int followers = user.getFollowers() + 1;
+                        transaction.update(toFollow, "followers", followers);
+                        return null;
+                    });
+
+                    DocumentReference fromFollower = FirebaseFirestore.getInstance()
                             .collection("user")
-                            .document(FirebaseAuth.getInstance().getUid())
-                            .get()
+                            .document(FirebaseAuth.getInstance().getUid());
+
+                            fromFollower.get()
                             .addOnCompleteListener(task1 -> {
                                 User me = task1.getResult().toObject(User.class);
+
+                                FirebaseFirestore.getInstance().runTransaction(transaction -> {
+                                    int following = me.getFollowing() + 1;
+                                    transaction.update(fromFollower, "following", following);
+                                    return null;
+                                });
+
 
                                 FirebaseFirestore.getInstance()
                                         .collection("followers")
@@ -125,11 +141,28 @@ public class ProfileFireDataSource implements ProfileDataSource {
 
     @Override
     public void unfollow(String uid) {
-        FirebaseFirestore.getInstance().collection("user")
-                .document(uid)
-                .get()
+        DocumentReference toUnfollow = FirebaseFirestore.getInstance().collection("user")
+                .document(uid);
+
+                toUnfollow.get()
                 .addOnCompleteListener(task -> {
                     User user = task.getResult().toObject(User.class);
+
+                    FirebaseFirestore.getInstance().runTransaction(transaction -> {
+                        int followers = user.getFollowers() - 1;
+                        transaction.update(toUnfollow, "followers", followers);
+                        return null;
+                    });
+
+                    DocumentReference fromFollower = FirebaseFirestore.getInstance().collection("user")
+                            .document(FirebaseAuth.getInstance().getUid());
+
+                    FirebaseFirestore.getInstance().runTransaction(transaction -> {
+                        User follower = transaction.get(fromFollower).toObject(User.class);
+                        int following = follower.getFollowing() - 1;
+                        transaction.update(fromFollower, "followers", following);
+                        return null;
+                    });
 
                     FirebaseFirestore.getInstance()
                             .collection("followers")
