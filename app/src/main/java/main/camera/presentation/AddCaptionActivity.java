@@ -16,11 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.joaquim.instagramfake.R;
 
 import butterknife.BindView;
 import commom.view.AbstractActivity;
+import main.camera.datasource.AddDataSource;
+import main.camera.datasource.AddFireDatasource;
 import main.camera.datasource.AddLocalDataSource;
 
 public class AddCaptionActivity extends AbstractActivity implements AddCaptionView {
@@ -30,6 +33,9 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
 
     @BindView(R.id.main_add_caption_edit_text)
     EditText editText;
+
+    @BindView(R.id.add_progress)
+    ProgressBar progressBar;
 
     private Uri uri;
     private AddPresenter presenter;
@@ -64,8 +70,18 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
         uri = getIntent().getExtras().getParcelable("uri");
         imageView.setImageURI(uri);
 
-        AddLocalDataSource dataSource = new AddLocalDataSource();
+        AddDataSource dataSource = new AddFireDatasource();
         presenter = new AddPresenter(this, dataSource);
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -87,7 +103,6 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
                 return true;
             case R.id.action_share:
                 presenter.createPost(uri, editText.getText().toString());
-                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -95,6 +110,6 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
 
     @Override
     public void postSaved() {
-        //TODO
+        finish();
     }
 }
